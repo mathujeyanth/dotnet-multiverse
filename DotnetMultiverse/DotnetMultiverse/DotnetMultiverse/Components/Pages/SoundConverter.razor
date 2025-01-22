@@ -3,7 +3,6 @@
 @using MudBlazor
 @using System.IO
 @using FluentValidation
-@using BlazorBootstrap
 @using DotnetMultiverse.Startup
 @using DotnetMultiverse.Startup.AudioFormats
 
@@ -13,9 +12,6 @@
 @inject ISnackbar Snackbar
 @inject AudioHandler AudioHandler
 
-<div class="float-end">
-    <ThemeSwitcher Position="DropdownMenuPosition.End" />
-</div>
 <MudStack Style="width: 100%">
     <MudForm Model="@_model"
              @bind-IsValid="_isValid"
