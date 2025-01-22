@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Blazor.Bootstrap" Version="3.2.0" />
         <PackageReference Include="FluentValidation" Version="11.11.0" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.11" />
         <PackageReference Include="MudBlazor" Version="7.15.0" />
@@ -16,11 +15,6 @@
         <PackageReference Include="OggVorbisEncoder" Version="1.2.2" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.11" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.11" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
     </ItemGroup>
 
 </Project>

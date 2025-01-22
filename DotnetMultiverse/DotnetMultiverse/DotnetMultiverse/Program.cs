@@ -25,7 +25,6 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-builder.Services.AddBlazorBootstrap();
 builder.Services.AddSingleton<AudioHandler>();
 builder.Services.AddSingleton<Mp3Handler>();
 var app = builder.Build();
