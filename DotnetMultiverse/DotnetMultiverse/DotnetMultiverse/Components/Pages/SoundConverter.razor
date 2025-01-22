@@ -17,9 +17,7 @@
              @bind-IsValid="_isValid"
              @bind-IsTouched="_isTouched"
              Validation="@_validationRules.ValidateValue">
-        <MudOverlay Visible="IsConverting" DarkBackground="true">
-            @* <MudProgressCircular Color="Color.Secondary" Indeterminate="true"/> *@
-        </MudOverlay>
+        <MudOverlay Visible="_isConverting" DarkBackground="true"></MudOverlay>
         <MudItem xs="12">
             <MudFileUpload T="IReadOnlyList<IBrowserFile>"
                            @ref="@_fileUpload"
@@ -31,7 +29,7 @@
                            InputStyle="opacity:0"
                            ErrorText="@string.Empty"
                            MaximumFileCount="1"
-                           Disabled="IsConverting"
+                           Disabled="_isConverting"
                            tabindex="-1"
                            @ondrop="@ClearDragClass"
                            @ondragenter="@SetDragClass"
@@ -69,18 +67,24 @@
                 <MudSpacer/>
                 <MudButton Color="Color.Primary"
                            StartIcon="@Icons.Material.Filled.DoubleArrow"
-                           Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any() || IsConverting)"
+                           Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any() || _isConverting)"
                            OnClick="@Convert"
                            Variant="Variant.Filled">
                     Convert
                 </MudButton>
             </MudToolBar>
         </MudItem>
-        <MudProgressLinear Color="Color.Primary" Striped="true" Size="Size.Large" Value="@_progress" Min="0" Max="1" />
+        <MudItem>
+            <MudProgressLinear Color="Color.Primary" Striped="true" Size="Size.Large" Value="@_progress" Min="0" Max="1">
+                <MudText Typo="Typo.subtitle2" Color="Color.Default">
+                    <b>@((int) (_progress * 100))% Complete</b>
+                </MudText>
+            </MudProgressLinear>
+        </MudItem>
         <MudButton Color="Color.Primary"
                    Variant="Variant.Filled"
                    StartIcon="@Icons.Material.Filled.ArrowDownward"
-                   Disabled="@(!_isValid || !_isTouched || IsConverting || _outputAudio is null)"
+                   Disabled="@(!_isValid || !_isTouched || _isConverting || _outputAudio is null)"
                    OnClick="DownloadFileFromStream">
             Download
         </MudButton>
@@ -102,7 +106,6 @@
 </script>
 
 @code {
-#nullable enable
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
     public class Model
     {
@@ -117,15 +120,15 @@
     private bool _isTouched;
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     private string _dragClass = DefaultDragClass;
-    private double _progress = 0;
-    private bool IsConverting { get; set; } = false;
+    private double _progress;
+    private bool _isConverting;
 
     private async Task Convert()
     {
         if (!_isValid) throw new Exception();
         var file = _model.Files!.Single();
         
-        IsConverting = true;
+        _isConverting = true;
         var inputAudio = await Task.Run(() => AudioHandler.ValidateAndCreateAudio(file));
         var progress = new Progress<double>(x =>
         {
@@ -134,7 +137,7 @@
         });
         _outputAudio = await Task.Run(() => AudioHandler.ToOgg(inputAudio, progress));
         
-        IsConverting = false;
+        _isConverting = false;
         _progress = 0;
         StateHasChanged();
     }
@@ -177,7 +180,7 @@
         var file = _model.Files?.First()!;
         _outputAudio!.AudioStream.Seek(0, SeekOrigin.Begin);
         using var streamRef = new DotNetStreamReference(stream: _outputAudio!.AudioStream);
-        var newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)} - converted.{Path.GetExtension(file.Name)}";
+        var newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)} - converted.{_outputAudio!.Extension}";
         await JsRuntime.InvokeVoidAsync("jsDownloadFileFromStream", newFileName, streamRef);
     }
 }
