@@ -1,16 +1,17 @@
 ﻿@page "/soundConverter"
+@rendermode InteractiveAuto
 
-@using MudBlazor
 @using System.IO
+@using DotnetMultiverse.SoundConverter.AudioFormats
 @using FluentValidation
-@using DotnetMultiverse.Startup
-@using DotnetMultiverse.Startup.AudioFormats
-
-@rendermode InteractiveServer
 
 @inject IJSRuntime JsRuntime
 @inject ISnackbar Snackbar
 @inject AudioHandler AudioHandler
+
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
 
 <MudStack Style="width: 100%">
     <MudForm Model="@_model"

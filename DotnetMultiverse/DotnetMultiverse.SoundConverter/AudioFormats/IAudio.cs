@@ -1,4 +1,7 @@
-namespace DotnetMultiverse.Startup.AudioFormats;
+using System;
+using System.IO;
+
+namespace DotnetMultiverse.SoundConverter.AudioFormats;
 
 public interface IAudio : IDisposable
 {
