@@ -1,10 +1,12 @@
 using DotnetMultiverse.Components;
-using DotnetMultiverse.Startup;
-using DotnetMultiverse.Startup.AudioHandlers;
+using DotnetMultiverse.SoundConverter;
+using DotnetMultiverse.SoundConverter.AudioHandlers;
 using MudBlazor;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSingleton<AudioHandler>();
+builder.Services.AddSingleton<Mp3Handler>();
 
 // Add services to the container.
 builder.Services
@@ -25,11 +27,9 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-builder.Services.AddSingleton<AudioHandler>();
-builder.Services.AddSingleton<Mp3Handler>();
 var app = builder.Build();
 
-/*// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -39,7 +39,7 @@ else
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-}*/
+}
 
 app.UseHttpsRedirection();
 
@@ -48,6 +48,7 @@ app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveWebAssemblyRenderMode()
+    .AddAdditionalAssemblies(typeof(DotnetMultiverse.Client._Imports).Assembly);
 
 app.Run();

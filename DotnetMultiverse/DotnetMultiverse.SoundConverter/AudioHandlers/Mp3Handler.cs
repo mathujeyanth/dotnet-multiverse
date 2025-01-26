@@ -1,8 +1,10 @@
-using DotnetMultiverse.Startup.AudioFormats;
+using System.IO;
+using System.Threading.Tasks;
+using DotnetMultiverse.SoundConverter.AudioFormats;
 using NAudio.Wave;
 using NLayer.NAudioSupport;
 
-namespace DotnetMultiverse.Startup.AudioHandlers;
+namespace DotnetMultiverse.SoundConverter.AudioHandlers;
 
 public class Mp3Handler : IAudioHandler
 {
