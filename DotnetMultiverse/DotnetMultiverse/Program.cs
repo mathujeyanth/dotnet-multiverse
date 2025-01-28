@@ -1,12 +1,14 @@
 using DotnetMultiverse.Components;
 using DotnetMultiverse.SoundConverter;
 using DotnetMultiverse.SoundConverter.AudioHandlers;
-using MudBlazor;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSingleton<AudioHandler>();
-builder.Services.AddSingleton<Mp3Handler>();
+builder.Services.AddScoped<AudioHandler>();
+builder.Services.AddScoped<Mp3Handler>();
 
 // Add services to the container.
 builder.Services
@@ -14,18 +16,7 @@ builder.Services
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
-builder.Services.AddMudServices(config =>
-{
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
-
-    config.SnackbarConfiguration.PreventDuplicates = false;
-    config.SnackbarConfiguration.NewestOnTop = false;
-    config.SnackbarConfiguration.ShowCloseIcon = true;
-    config.SnackbarConfiguration.VisibleStateDuration = 10000;
-    config.SnackbarConfiguration.HideTransitionDuration = 500;
-    config.SnackbarConfiguration.ShowTransitionDuration = 500;
-    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
-});
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

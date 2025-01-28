@@ -1,31 +1,7 @@
 ﻿@using MudBlazor
 @inherits LayoutComponentBase
 
-<MudPopoverProvider/>
-<MudDialogProvider/>
-<MudSnackbarProvider/>
-<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"/>
-
 <MudLayout>
-    @* $1$ <MudAppBar Elevation="1"> #1# *@
-    @* $1$     <MudText Typo="Typo.h5" Class="ml-3">Application</MudText> #1# *@
-    @* $1$ </MudAppBar> #1# *@
-    @* <MudAppBar Color="Color.Primary"    > *@
-    @*     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" /> *@
-    @*     <MudButton Color="Color.Inherit" Href="/">Dotnet Multiverse</MudButton> *@
-    @*     <MudSpacer /> *@
-    @*     <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.Start" Href="https://github.com/mathujeyanth/dotnet-multiverse"/> *@
-    @*     <MudIconButton>Theme</MudIconButton> *@
-    @* </MudAppBar> *@
-    @* $1$ <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2"> #1# *@
-    @* $1$     <NavMenu/> #1# *@
-    @* $1$ </MudDrawer> #1# *@
-    @* <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2"> *@
-    @*     <MudNavMenu> *@
-    @*         <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Home</MudNavLink> *@
-    @*         <MudNavLink Href="soundConverter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MusicNote">Sound converter</MudNavLink> *@
-    @*     </MudNavMenu> *@
-    @* </MudDrawer> *@
     <TopBar/>
     <MudMainContent Class="mt-16 pa-4">
         @Body
@@ -34,46 +10,7 @@
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
+    <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
 
-@code {
-    private bool _drawerOpen = false;
-    private bool _isDarkMode = true;
-    private MudTheme? _theme = null;
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        _theme = new()
-        {
-            PaletteLight = _lightPalette,
-            PaletteDark = _darkPalette,
-            LayoutProperties = new LayoutProperties()
-        };
-    }
-
-
-    private void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-        Console.WriteLine("hello");
-    }
-
-    private void DarkModeToggle()
-    {
-        _isDarkMode = !_isDarkMode;
-    }
-
-    private readonly PaletteLight _lightPalette = new();
-    private readonly PaletteDark _darkPalette = new();
-
-    public string DarkLightModeButtonIcon => _isDarkMode switch
-    {
-        true => Icons.Material.Rounded.AutoMode,
-        false => Icons.Material.Outlined.DarkMode,
-    };
-
-}

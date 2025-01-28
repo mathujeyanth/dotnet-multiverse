@@ -1,28 +1,60 @@
 @using MudBlazor
+@* $1$ Sometimes this does not work #1# *@
 @rendermode InteractiveAuto
 
-<MudAppBar Color="Color.Primary"    >
+@* $1$ Always works with this #1# *@
+@* @rendermode InteractiveServer *@
+
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode"  />
+
+<MudAppBar Elevation="1" Color="Color.Primary">
     <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
     <MudButton Color="Color.Inherit" Href="/">Dotnet Multiverse</MudButton>
-    <MudSpacer />
-    <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Edge="Edge.Start" Href="https://github.com/mathujeyanth/dotnet-multiverse"/>
-    <MudIconButton>Theme</MudIconButton>
+    <MudSpacer/>
+    <MudIconButton 
+        Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" 
+        Edge="Edge.Start" 
+        Href="https://github.com/mathujeyanth/dotnet-multiverse"/>
+    <MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DarkModeToggle" />
 </MudAppBar>
-@* <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2"> *@
-@*     <NavMenu/> *@
-@* </MudDrawer> *@
-<MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" OverlayAutoClose="true">
+<MudDrawer @bind-Open="_drawerOpen" 
+           ClipMode="DrawerClipMode.Always" 
+           OverlayAutoClose="true" 
+           Variant="DrawerVariant.Temporary"
+           Style="position:fixed;top:auto;">
     <MudNavMenu>
-        <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Home</MudNavLink>
+        <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
         <MudNavLink Href="soundConverter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MusicNote">Sound converter</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 
 @code {
-    private bool _drawerOpen = true;
+    private bool _drawerOpen;
+    private bool _isDarkMode = true;
+    private MudTheme _theme = new()
+    {
+        PaletteLight = new PaletteLight(),
+        PaletteDark = new PaletteDark(),
+        LayoutProperties = new LayoutProperties()
+    };
+    
+
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
-        Console.WriteLine("hello");
     }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        false => Icons.Material.Rounded.DarkMode,
+        true => Icons.Material.Outlined.LightMode
+    };
 }
