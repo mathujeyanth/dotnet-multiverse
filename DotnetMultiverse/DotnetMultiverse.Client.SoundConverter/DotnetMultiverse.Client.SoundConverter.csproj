@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
-<!--        <WasmEnableThreads>true</WasmEnableThreads> requires .net 9?-->
+        <!--        <WasmEnableThreads>true</WasmEnableThreads> requires .net 9?-->
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DotnetMultiverse.SoundConverter\DotnetMultiverse.SoundConverter.csproj" />
+      <ProjectReference Include="..\DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj" />
     </ItemGroup>
 </Project>

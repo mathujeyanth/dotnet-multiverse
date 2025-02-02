@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DotnetMultiverse.Client\DotnetMultiverse.Client.csproj" />
+        <ProjectReference Include="..\DotnetMultiverse.Client.SoundConverter\DotnetMultiverse.Client.SoundConverter.csproj" />
     </ItemGroup>
     
     <ItemGroup>

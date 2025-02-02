@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using DotnetMultiverse.SoundConverter.AudioFormats;
+using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 using NAudio.Wave;
 using NLayer.NAudioSupport;
 using NVorbis;
 using OggVorbisEncoder;
 
-namespace DotnetMultiverse.SoundConverter.AudioHandlers;
+namespace DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 
 internal static class Mp3ToOggConverter
 {

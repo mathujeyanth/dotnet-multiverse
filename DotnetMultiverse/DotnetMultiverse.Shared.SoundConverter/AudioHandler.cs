@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using DotnetMultiverse.SoundConverter.AudioFormats;
-using DotnetMultiverse.SoundConverter.AudioHandlers;
+using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
+using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace DotnetMultiverse.SoundConverter;
+namespace DotnetMultiverse.Shared.SoundConverter;
 
 public class AudioHandler(Mp3Handler mp3Handler)
 {
