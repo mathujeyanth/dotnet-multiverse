@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace DotnetMultiverse.SoundConverter.AudioFormats;
+namespace DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 
 public interface IAudio : IDisposable
 {

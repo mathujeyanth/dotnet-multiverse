@@ -1,6 +1,6 @@
+using DotnetMultiverse.Shared.SoundConverter;
+using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using DotnetMultiverse.SoundConverter;
-using DotnetMultiverse.SoundConverter.AudioHandlers;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 

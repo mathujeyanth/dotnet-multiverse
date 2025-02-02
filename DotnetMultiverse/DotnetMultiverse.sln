@@ -2,9 +2,9 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse", "DotnetMultiverse\DotnetMultiverse.csproj", "{214BFF03-77EE-4F82-818C-D0A85775FEE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.SoundConverter", "DotnetMultiverse.SoundConverter\DotnetMultiverse.SoundConverter.csproj", "{4AED868C-91C7-43B8-A6A1-84B266C621F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Shared.SoundConverter", "DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj", "{4AED868C-91C7-43B8-A6A1-84B266C621F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Client", "DotnetMultiverse.Client\DotnetMultiverse.Client.csproj", "{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Client.SoundConverter", "DotnetMultiverse.Client.SoundConverter\DotnetMultiverse.Client.SoundConverter.csproj", "{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

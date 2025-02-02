@@ -1,8 +1,8 @@
 using System.IO;
 using System.Threading.Tasks;
-using DotnetMultiverse.SoundConverter.AudioFormats;
+using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 
-namespace DotnetMultiverse.SoundConverter.AudioHandlers;
+namespace DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 
 public interface IAudioHandler
 {

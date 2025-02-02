@@ -1,6 +1,6 @@
 using DotnetMultiverse.Components;
-using DotnetMultiverse.SoundConverter;
-using DotnetMultiverse.SoundConverter.AudioHandlers;
+using DotnetMultiverse.Shared.SoundConverter;
+using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -40,6 +40,6 @@ app.UseAntiforgery();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(DotnetMultiverse.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(DotnetMultiverse.Client.SoundConverter._Imports).Assembly);
 
 app.Run();
