@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
+<!--        <StaticWebAssetBasePath>soundConverter</StaticWebAssetBasePath>-->
         <!--        <WasmEnableThreads>true</WasmEnableThreads> requires .net 9?-->
     </PropertyGroup>
 
