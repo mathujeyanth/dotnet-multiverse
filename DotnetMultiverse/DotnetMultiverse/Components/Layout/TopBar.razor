@@ -1,3 +1,4 @@
+@using DotnetMultiverse.Client.SoundConverter.Pages
 @using MudBlazor
 @* $1$ Sometimes this does not work #1# *@
 @rendermode InteractiveAuto
@@ -27,7 +28,7 @@
            Style="position:fixed;top:auto;">
     <MudNavMenu>
         <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-        <MudNavLink Href="soundConverter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MusicNote">Sound converter</MudNavLink>
+        <MudNavLink Href="@SoundConverter.PageUrl" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MusicNote">Sound converter</MudNavLink>
     </MudNavMenu>
 </MudDrawer>
 

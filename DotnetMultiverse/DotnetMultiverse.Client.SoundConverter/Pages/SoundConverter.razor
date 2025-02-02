@@ -1,4 +1,4 @@
-﻿@page "/soundConverter"
+﻿@attribute [Route(PageUrl)]
 @rendermode InteractiveAuto
 
 @using System.IO
@@ -103,6 +103,7 @@
 </script>
 
 @code {
+    public const string PageUrl = "soundConverter";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
     public class Model
     {
