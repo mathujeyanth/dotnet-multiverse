@@ -3,9 +3,11 @@
 @inherits LayoutComponentBase
 
 <MudLayout>
-    <TopBar/>
-    <MudMainContent Class="mt-16 pa-4">
-        @Body
+    <TopBar @rendermode="InteractiveAuto"/>
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
+            @Body
+        </MudContainer>
     </MudMainContent>
 </MudLayout>
 
