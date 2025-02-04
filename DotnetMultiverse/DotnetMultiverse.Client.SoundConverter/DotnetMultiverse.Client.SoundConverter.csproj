@@ -15,4 +15,8 @@
     <ItemGroup>
       <ProjectReference Include="..\DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Layout\MainLayout.razor" />
+    </ItemGroup>
 </Project>

@@ -6,87 +6,90 @@
 @using FluentValidation
 
 @inject IJSRuntime JsRuntime
-@inject ISnackbar Snackbar
 @inject AudioHandler AudioHandler
 
-<MudStack Style="width: 100%">
-    <MudForm Model="@_model"
-             @bind-IsValid="_isValid"
-             @bind-IsTouched="_isTouched"
-             Validation="@_validationRules.ValidateValue">
-        <MudOverlay Visible="_isConverting" DarkBackground="true"></MudOverlay>
-        <MudItem xs="12">
-            <MudFileUpload T="IReadOnlyList<IBrowserFile>"
-                           @ref="@_fileUpload"
-                           @bind-Files="_model.Files"
-                           For="@(() => _model.Files!)"
-                           AppendMultipleFiles="false"
-                           Hidden="@false"
-                           InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                           InputStyle="opacity:0"
-                           ErrorText="@string.Empty"
-                           MaximumFileCount="1"
-                           Disabled="_isConverting"
-                           tabindex="-1"
-                           @ondrop="@ClearDragClass"
-                           @ondragenter="@SetDragClass"
-                           @ondragleave="@ClearDragClass"
-                           @ondragend="@ClearDragClass">
-                <ActivatorContent>
-                    <MudPaper Height="300px"
-                              Outlined="true"
-                              Class="@_dragClass">
-                        <MudText Typo="Typo.h6">
-                            Drag and drop files here or click
+<PageTitle>Sound Converter</PageTitle>
+
+<MudGrid Justify="Justify.Center">
+    <MudItem xs="12" sm="7">
+        <MudPaper Class="pa-4">
+            <MudForm Model="@_model"
+                     @bind-IsValid="_isValid"
+                     @bind-IsTouched="_isTouched"
+                     Validation="@_validationRules.ValidateValue">
+                <MudStack Spacing="3">
+                    <MudOverlay Visible="_isConverting" DarkBackground="true"></MudOverlay>
+                    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                                   @ref="@_fileUpload"
+                                   @bind-Files="_model.Files"
+                                   For="@(() => _model.Files!)"
+                                   AppendMultipleFiles="false"
+                                   Hidden="@false"
+                                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                   InputStyle="opacity:0"
+                                   ErrorText="@string.Empty"
+                                   MaximumFileCount="1"
+                                   Disabled="_isConverting"
+                                   tabindex="-1"
+                                   @ondrop="@ClearDragClass"
+                                   @ondragenter="@SetDragClass"
+                                   @ondragleave="@ClearDragClass"
+                                   @ondragend="@ClearDragClass"
+                                   Style="width: 100%;">
+                        <ActivatorContent>
+                            <MudPaper Height="300px"
+                                      Outlined="true"
+                                      Class="@_dragClass">
+                                <MudText Typo="Typo.h6" Align="Align.Center">
+                                    Drag and drop files here or click
+                                </MudText>
+                                @foreach (var file in _model.Files?.Select(file => file.Name) ?? [])
+                                {
+                                    <MudChip T="string" Color="Color.Dark" Text="@file"/>
+                                }
+                            </MudPaper>
+                        </ActivatorContent>
+                    </MudFileUpload>
+                    <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" StretchItems="StretchItems.None">
+                        <MudButton Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.AttachFile"
+                                   OnClick="@OpenFilePickerAsync"
+                                   Variant="Variant.Filled">
+                            Select file
+                        </MudButton>
+                        <MudButton Color="Color.Error"
+                                   StartIcon="@Icons.Material.Filled.Delete"
+                                   Disabled="@(_model.Files is null || !_model.Files.Any())"
+                                   OnClick="@ClearAsync"
+                                   Variant="Variant.Filled">
+                            Clear
+                        </MudButton>
+                        <MudSpacer/>
+                        <MudButton Color="Color.Primary"
+                                   StartIcon="@Icons.Material.Filled.DoubleArrow"
+                                   Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any() || _isConverting)"
+                                   OnClick="@Convert"
+                                   Variant="Variant.Filled">
+                            Convert
+                        </MudButton>
+                    </MudStack>
+                    <MudProgressLinear Color="Color.Primary" Striped="true" Size="Size.Large" Value="@_progress" Min="0" Max="1">
+                        <MudText Color="Color.Default">
+                            <b>@((int)(_progress * 100))% Complete</b>
                         </MudText>
-                        @foreach (var file in _model.Files?.Select(file => file.Name) ?? [])
-                        {
-                            <MudChip T="string" Color="Color.Dark" Text="@file"/>
-                        }
-                    </MudPaper>
-                </ActivatorContent>
-            </MudFileUpload>
-            <MudToolBar Gutters="@false"
-                        Class="relative d-flex justify-normal gap-4">
-                <MudButton Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.AttachFile"
-                           OnClick="@OpenFilePickerAsync"
-                           Variant="Variant.Filled">
-                    Select file
-                </MudButton>
-                <MudButton Color="Color.Error"
-                           StartIcon="@Icons.Material.Filled.Delete"
-                           Disabled="@(_model.Files is null || !_model.Files.Any())"
-                           OnClick="@ClearAsync"
-                           Variant="Variant.Filled">
-                    Clear
-                </MudButton>
-                <MudSpacer/>
-                <MudButton Color="Color.Primary"
-                           StartIcon="@Icons.Material.Filled.DoubleArrow"
-                           Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any() || _isConverting)"
-                           OnClick="@Convert"
-                           Variant="Variant.Filled">
-                    Convert
-                </MudButton>
-            </MudToolBar>
-        </MudItem>
-        <MudItem>
-            <MudProgressLinear Color="Color.Primary" Striped="true" Size="Size.Large" Value="@_progress" Min="0" Max="1">
-                <MudText Typo="Typo.subtitle2" Color="Color.Default">
-                    <b>@((int) (_progress * 100))% Complete</b>
-                </MudText>
-            </MudProgressLinear>
-        </MudItem>
-        <MudButton Color="Color.Primary"
-                   Variant="Variant.Filled"
-                   StartIcon="@Icons.Material.Filled.ArrowDownward"
-                   Disabled="@(!_isValid || !_isTouched || _isConverting || _outputAudio is null)"
-                   OnClick="DownloadFileFromStream">
-            Download
-        </MudButton>
-    </MudForm>
-</MudStack>
+                    </MudProgressLinear>
+                    <MudButton Color="Color.Primary"
+                               Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.ArrowDownward"
+                               Disabled="@(!_isValid || !_isTouched || _isConverting || _outputAudio is null)"
+                               OnClick="DownloadFileFromStream">
+                        Download
+                    </MudButton>
+                </MudStack>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 <script>
     window.jsDownloadFileFromStream = async (fileName, contentStreamReference) => {
@@ -105,12 +108,13 @@
 @code {
     public const string PageUrl = "soundConverter";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
+
     public class Model
     {
         public IReadOnlyList<IBrowserFile>? Files { get; set; } = new List<IBrowserFile>();
     }
 
-    private readonly Model _model =  new();
+    private readonly Model _model = new();
     private readonly ModelFluentValidator _validationRules = new();
     private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
     private IAudio? _outputAudio;
@@ -125,7 +129,7 @@
     {
         if (!_isValid) throw new Exception();
         var file = _model.Files!.Single();
-        
+
         _isConverting = true;
         var inputAudio = await Task.Run(() => AudioHandler.ValidateAndCreateAudio(file));
         var progress = new Progress<double>(x =>
@@ -134,7 +138,7 @@
             StateHasChanged();
         });
         _outputAudio = await Task.Run(() => AudioHandler.ToOgg(inputAudio, progress));
-        
+
         _isConverting = false;
         _progress = 0;
         StateHasChanged();
@@ -159,8 +163,8 @@
             RuleFor(x => x.Files)
                 .NotEmpty()
                 .WithMessage("There must be at least 1 file.");
-            
-            var acceptedTypes = new List<string>{"audio/mpeg", "audio/ogg", "audio/wav"};
+
+            var acceptedTypes = new List<string> { "audio/mpeg", "audio/ogg", "audio/wav" };
             RuleForEach(x => x.Files)
                 .Must(x => acceptedTypes.Contains(x.ContentType))
                 .WithMessage("Not accepted type.");
@@ -172,7 +176,7 @@
             return result.IsValid ? Array.Empty<string>() : result.Errors.Select(e => e.ErrorMessage);
         };
     }
-    
+
     private async Task DownloadFileFromStream()
     {
         var file = _model.Files?.First()!;
@@ -181,4 +185,5 @@
         var newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)} - converted.{_outputAudio!.Extension}";
         await JsRuntime.InvokeVoidAsync("jsDownloadFileFromStream", newFileName, streamRef);
     }
+
 }
