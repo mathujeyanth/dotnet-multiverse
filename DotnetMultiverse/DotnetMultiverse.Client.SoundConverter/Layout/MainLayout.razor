@@ -1,0 +1,74 @@
+﻿@using MudBlazor
+@using DotnetMultiverse.Client.SoundConverter
+@inherits LayoutComponentBase
+
+<MudPopoverProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+<MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode"  />
+
+<MudLayout>
+    <MudAppBar Elevation="0" Color="Color.Transparent" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <MudButton Color="Color.Primary" Href="/">Dotnet Multiverse</MudButton>
+        <MudSpacer/>
+        <MudIconButton
+            Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
+            Edge="Edge.Start"
+            Href="https://github.com/mathujeyanth/dotnet-multiverse"
+            Target="_blank"/>
+        <MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DarkModeToggle" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen"
+               Elevation="0"
+               ClipMode="DrawerClipMode.Always"
+               OverlayAutoClose="true"
+               Variant="DrawerVariant.Temporary"
+               Color="Color.Transparent">
+        <NavMenu/>
+    </MudDrawer>
+
+    <MudMainContent Class="pt-16 px-16">
+        <MudContainer Class="mt-6">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+
+@code {
+    private bool _drawerOpen;
+    private bool _isDarkMode = true;
+    private static PaletteLight _paletteLight = new();
+    private static PaletteDark _paletteDark = new();
+    private static LayoutProperties _layoutProperties = new();
+    private MudTheme _theme = new()
+    {
+        PaletteLight = _paletteLight,
+        PaletteDark = _paletteDark,
+        LayoutProperties = _layoutProperties
+    };
+
+
+    private void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+
+    private void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+    }
+
+    private string DarkLightModeButtonIcon => _isDarkMode switch
+    {
+        false => Icons.Material.Rounded.DarkMode,
+        true => Icons.Material.Outlined.LightMode
+    };
+}
