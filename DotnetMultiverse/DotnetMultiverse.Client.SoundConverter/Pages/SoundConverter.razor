@@ -114,7 +114,7 @@
                 <MudTable 
                     Items="_progressTableRows"
                     Loading="@(_progressTableRows.Any(x => !x.IsFinished))"
-                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None">
+                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None" RowsPerPage="@MaxUploadFiles">
                     <HeaderContent>
                         <MudTh>File Name</MudTh>
                         <MudTh>Progress</MudTh>
