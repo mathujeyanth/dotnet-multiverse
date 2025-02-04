@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
 <!--        <StaticWebAssetBasePath>soundConverter</StaticWebAssetBasePath>-->
         <!--        <WasmEnableThreads>true</WasmEnableThreads> requires .net 9?-->
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.12" />
+      <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.1" />
       <PackageReference Include="MudBlazor" Version="8.2.0" />
     </ItemGroup>
 
