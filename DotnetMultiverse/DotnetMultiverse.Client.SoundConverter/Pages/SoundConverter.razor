@@ -10,26 +10,26 @@
 
 <PageTitle>Sound Converter</PageTitle>
 
-<MudGrid Justify="Justify.Center">
+<MudGrid>
     <MudItem xs="12" sm="7">
         <MudPaper Class="pa-4">
             <MudForm Model="@_model"
                      @bind-IsValid="_isValid"
                      @bind-IsTouched="_isTouched"
-                     Validation="@_validationRules.ValidateValue">
+                     Validation="@_validationRules.ValidateValue"
+                     ValidationDelay="0">
                 <MudStack Spacing="3">
-                    <MudOverlay Visible="_isConverting" DarkBackground="true"></MudOverlay>
                     <MudFileUpload T="IReadOnlyList<IBrowserFile>"
                                    @ref="@_fileUpload"
                                    @bind-Files="_model.Files"
                                    For="@(() => _model.Files!)"
-                                   AppendMultipleFiles="false"
+                                   Accept=".mp3"
+                                   AppendMultipleFiles="true"
                                    Hidden="@false"
                                    InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
                                    InputStyle="opacity:0"
                                    ErrorText="@string.Empty"
-                                   MaximumFileCount="1"
-                                   Disabled="_isConverting"
+                                   MaximumFileCount="20"
                                    tabindex="-1"
                                    @ondrop="@ClearDragClass"
                                    @ondragenter="@SetDragClass"
@@ -50,6 +50,14 @@
                             </MudPaper>
                         </ActivatorContent>
                     </MudFileUpload>
+                    <MudItem>
+                        @if (_fileUpload?.ValidationErrors.Any() ?? false)
+                        {
+                            <MudText Color="Color.Error" Typo="@Typo.caption">
+                                @_fileUpload?.ValidationErrors.First()
+                            </MudText>
+                        }
+                    </MudItem>
                     <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" StretchItems="StretchItems.None">
                         <MudButton Color="Color.Primary"
                                    StartIcon="@Icons.Material.Filled.AttachFile"
@@ -67,26 +75,72 @@
                         <MudSpacer/>
                         <MudButton Color="Color.Primary"
                                    StartIcon="@Icons.Material.Filled.DoubleArrow"
-                                   Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any() || _isConverting)"
+                                   Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any())"
                                    OnClick="@Convert"
                                    Variant="Variant.Filled">
                             Convert
                         </MudButton>
                     </MudStack>
-                    <MudProgressLinear Color="Color.Primary" Striped="true" Size="Size.Large" Value="@_progress" Min="0" Max="1">
-                        <MudText Color="Color.Default">
-                            <b>@((int)(_progress * 100))% Complete</b>
-                        </MudText>
-                    </MudProgressLinear>
-                    <MudButton Color="Color.Primary"
-                               Variant="Variant.Filled"
-                               StartIcon="@Icons.Material.Filled.ArrowDownward"
-                               Disabled="@(!_isValid || !_isTouched || _isConverting || _outputAudio is null)"
-                               OnClick="DownloadFileFromStream">
-                        Download
-                    </MudButton>
                 </MudStack>
             </MudForm>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4 mud-height-full">
+            @if (_progressTableRows.Count == 0)
+            {
+                <MudTable 
+                    Items="Enumerable.Range(0, 5)"
+                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None">
+                    <HeaderContent>
+                        <MudTh>File Name</MudTh>
+                        <MudTh>Progress</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="File Name">
+                            <MudSkeleton/>
+                        </MudTd>
+                        <MudTd DataLabel="Progress">
+                            <MudSkeleton/>
+                        </MudTd>
+                        <MudTd DataLabel="Download">
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+            else
+            {
+                <MudTable 
+                    Items="_progressTableRows"
+                    Loading="@(_progressTableRows.Any(x => !x.IsFinished))"
+                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None">
+                    <HeaderContent>
+                        <MudTh>File Name</MudTh>
+                        <MudTh>Progress</MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="File Name">
+                            @context.FileName
+                        </MudTd>
+                        <MudTd DataLabel="Progress">
+                            <MudProgressLinear Color="Color.Primary" Striped="@(!context.IsFinished)" Value="@context.Progress" Min="0" Max="1" Size="Size.Large">
+                                <MudText>
+                                    @((int)(context.Progress * 100))%
+                                </MudText>
+                            </MudProgressLinear>
+                        </MudTd>
+                        <MudTd DataLabel="Download">
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary" Disabled="@(!_isValid || !_isTouched || !context.IsFinished)" OnClick="@(()=>  DownloadFileFromStream(context.FileName, context.OutputAudio!))"/>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        <MudTablePager HorizontalAlignment="HorizontalAlignment.Start" HideRowsPerPage="true"/>
+                    </PagerContent>
+                </MudTable>
+
+            }
         </MudPaper>
     </MudItem>
 </MudGrid>
@@ -106,6 +160,20 @@
 </script>
 
 @code {
+    private class ProgressTableRow
+    {
+        public required string From { get; set; }
+        public required string To { get; set; }
+        public required string FileName { get; set; }
+        public IProgress<Double> ProgressHandler { get; set; } = null!;
+        public double Progress { get; set; }
+        public bool IsFinished { get; set; }
+        public required IBrowserFile BrowserFile { get; set; }
+        public IAudio? OutputAudio { get; set; }
+    }
+
+    private readonly IList<ProgressTableRow> _progressTableRows = new List<ProgressTableRow>(); 
+    
     public const string PageUrl = "soundConverter";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
 
@@ -117,31 +185,48 @@
     private readonly Model _model = new();
     private readonly ModelFluentValidator _validationRules = new();
     private MudFileUpload<IReadOnlyList<IBrowserFile>>? _fileUpload;
-    private IAudio? _outputAudio;
     private bool _isValid;
     private bool _isTouched;
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     private string _dragClass = DefaultDragClass;
-    private double _progress;
-    private bool _isConverting;
+    private const int MaxUploadFiles = 5;
 
     private async Task Convert()
     {
-        if (!_isValid) throw new Exception();
-        var file = _model.Files!.Single();
-
-        _isConverting = true;
-        var inputAudio = await Task.Run(() => AudioHandler.ValidateAndCreateAudio(file));
-        var progress = new Progress<double>(x =>
+        if (!_isValid ||_model.Files is null) throw new Exception();
+        var files = _model.Files.ToArray();
+        _model.Files = new List<IBrowserFile>();
+        // Design Revision: Potentially use a queuing mechanism, to allow only converting three at a time, and to avoid running too many concurrent converts.
+        var tempProgressTableRows = new List<ProgressTableRow>();
+        foreach (var file in files)
         {
-            _progress = x;
-            StateHasChanged();
-        });
-        _outputAudio = await Task.Run(() => AudioHandler.ToOgg(inputAudio, progress));
+            var progressTableRow = new ProgressTableRow
+            {
+                From = "mp3",
+                To = "ogg",
+                FileName = file.Name,
+                OutputAudio = null,
+                BrowserFile = file
+            };
+            _progressTableRows.Add(progressTableRow);
+            tempProgressTableRows.Add(progressTableRow);
+        }
 
-        _isConverting = false;
-        _progress = 0;
-        StateHasChanged();
+        foreach (var progressTableRow in tempProgressTableRows)
+        {
+            var inputAudio = await Task.Run(() => AudioHandler.ValidateAndCreateAudio(progressTableRow.BrowserFile));
+            progressTableRow.ProgressHandler = new Progress<double>(x =>
+            {
+                progressTableRow.Progress = x;
+                StateHasChanged();
+            });
+
+            progressTableRow.OutputAudio = await Task.Run(() => AudioHandler.ToOgg(inputAudio, progressTableRow.ProgressHandler));
+
+            progressTableRow.Progress = 1;
+            progressTableRow.IsFinished = true;
+            StateHasChanged();
+        }
     }
 
     private void SetDragClass()
@@ -163,7 +248,10 @@
             RuleFor(x => x.Files)
                 .NotEmpty()
                 .WithMessage("There must be at least 1 file.");
-
+            RuleFor(x => x.Files)
+                .Must(x => x?.Count <= MaxUploadFiles)
+                .WithMessage($"Maximum of {MaxUploadFiles} files can be uploaded.");
+            
             var acceptedTypes = new List<string> { "audio/mpeg", "audio/ogg", "audio/wav" };
             RuleForEach(x => x.Files)
                 .Must(x => acceptedTypes.Contains(x.ContentType))
@@ -177,13 +265,11 @@
         };
     }
 
-    private async Task DownloadFileFromStream()
+    private async Task DownloadFileFromStream(string fileName, IAudio outputAudio)
     {
-        var file = _model.Files?.First()!;
-        _outputAudio!.AudioStream.Seek(0, SeekOrigin.Begin);
-        using var streamRef = new DotNetStreamReference(stream: _outputAudio!.AudioStream);
-        var newFileName = $"{Path.GetFileNameWithoutExtension(file.Name)} - converted.{_outputAudio!.Extension}";
+        outputAudio.AudioStream.Seek(0, SeekOrigin.Begin);
+        using var streamRef = new DotNetStreamReference(stream: outputAudio.AudioStream);
+        var newFileName = $"{Path.GetFileNameWithoutExtension(fileName)} - converted.{outputAudio.Extension}";
         await JsRuntime.InvokeVoidAsync("jsDownloadFileFromStream", newFileName, streamRef);
     }
-
 }
