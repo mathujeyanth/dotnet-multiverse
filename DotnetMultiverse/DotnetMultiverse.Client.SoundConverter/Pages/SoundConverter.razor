@@ -16,8 +16,7 @@
             <MudForm Model="@_model"
                      @bind-IsValid="_isValid"
                      @bind-IsTouched="_isTouched"
-                     Validation="@_validationRules.ValidateValue"
-                     ValidationDelay="0">
+                     Validation="@_validationRules.ValidateValue">
                 <MudStack Spacing="3">
                     <MudFileUpload T="IReadOnlyList<IBrowserFile>"
                                    @ref="@_fileUpload"
@@ -50,14 +49,6 @@
                             </MudPaper>
                         </ActivatorContent>
                     </MudFileUpload>
-                    <MudItem>
-                        @if (_fileUpload?.ValidationErrors.Any() ?? false)
-                        {
-                            <MudText Color="Color.Error" Typo="@Typo.caption">
-                                @_fileUpload?.ValidationErrors.First()
-                            </MudText>
-                        }
-                    </MudItem>
                     <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" StretchItems="StretchItems.None">
                         <MudButton Color="Color.Primary"
                                    StartIcon="@Icons.Material.Filled.AttachFile"
@@ -132,7 +123,7 @@
                             </MudProgressLinear>
                         </MudTd>
                         <MudTd DataLabel="Download">
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary" Disabled="@(!_isValid || !_isTouched || !context.IsFinished)" OnClick="@(()=>  DownloadFileFromStream(context.FileName, context.OutputAudio!))"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary" Disabled="@(!context.IsFinished)" OnClick="@(()=>  DownloadFileFromStream(context.FileName, context.OutputAudio!))"/>
                         </MudTd>
                     </RowTemplate>
                     <PagerContent>
@@ -164,11 +155,11 @@
     {
         public required string From { get; set; }
         public required string To { get; set; }
-        public required string FileName { get; set; }
+        public required string FileName { get; init; }
         public IProgress<Double> ProgressHandler { get; set; } = null!;
         public double Progress { get; set; }
         public bool IsFinished { get; set; }
-        public required IBrowserFile BrowserFile { get; set; }
+        public required IBrowserFile BrowserFile { get; init; }
         public IAudio? OutputAudio { get; set; }
     }
 
