@@ -161,7 +161,6 @@
         public required string From { get; set; }
         public required string To { get; set; }
         public required string FileName { get; init; }
-        // public IProgress<double> ProgressHandler { get; set; } = null!;
         public double Progress { get; set; }
         public bool IsFinished { get; set; }
         public IAudio? OutputAudio { get; set; }
@@ -201,7 +200,6 @@
 
         private async Task Converter()
         {
-            Console.WriteLine("In thread");
             while (!_concurrentQueue.IsEmpty)
             {
                 if (!_concurrentQueue.TryDequeue(out var result))
@@ -209,20 +207,14 @@
                     throw new Exception();
                 }
 
-                var guid = result.progressTableRow.Guid;
-                Console.WriteLine(guid);
                 var inputAudio = result.audio;
                 var progressHandler = new Progress<double>(progress =>
                 {
-                    Console.WriteLine($"Got update for {result.progressTableRow.Guid} with {progress}");
                     result.progressTableRow.Progress = progress;
                     NotifyStateChanged();
                 });
                     
-                Console.WriteLine($"{guid} before");
                 result.progressTableRow.OutputAudio = await audioHandler.ToOgg(inputAudio, progressHandler);
-                Console.WriteLine($"{guid} after convert");
-
                 result.progressTableRow.Progress = 1;
                 result.progressTableRow.IsFinished = true;
                 NotifyStateChanged();
@@ -232,9 +224,7 @@
         public void StartConverting()
         {
             
-            Console.WriteLine("Before check");
             if (_thread is not null && _thread.IsAlive) return;
-            Console.WriteLine("Before thread");
             _thread = new Thread(async void () => await Converter());
             _thread.Start();
         }
@@ -270,9 +260,7 @@
             var progressTableRow = _guidToProgress[key];
             var inputAudio = await AudioHandler.ValidateAndCreateAudio(file);
         
-            Console.WriteLine("before");
             _conversionScheduler.AddToQueue(progressTableRow, inputAudio);
-            Console.WriteLine("finished");
             
             guidToFile.Remove(key);
         }
