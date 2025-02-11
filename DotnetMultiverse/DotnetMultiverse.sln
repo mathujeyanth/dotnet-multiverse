@@ -6,6 +6,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Shared.Sou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Client.SoundConverter", "DotnetMultiverse.Client.SoundConverter\DotnetMultiverse.Client.SoundConverter.csproj", "{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.PWA.SoundConverter", "DotnetMultiverse.PWA.SoundConverter\DotnetMultiverse.PWA.SoundConverter.csproj", "{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDevServer", "CustomDevServer\CustomDevServer.csproj", "{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

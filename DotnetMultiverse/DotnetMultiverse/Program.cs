@@ -1,14 +1,10 @@
 using DotnetMultiverse.Components;
-using DotnetMultiverse.Shared.SoundConverter;
-using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<AudioHandler>();
-builder.Services.AddScoped<Mp3Handler>();
 
 // Add services to the container.
 builder.Services

@@ -5,6 +5,7 @@
 @using System.Collections.Concurrent
 @using System.IO
 @using System.Threading
+@using DotnetMultiverse.Shared.SoundConverter
 @using DotnetMultiverse.Shared.SoundConverter.AudioFormats
 @using FluentValidation
 
@@ -168,7 +169,7 @@
 
     private readonly IDictionary<Guid, ProgressTableRow> _guidToProgress = new Dictionary<Guid, ProgressTableRow>(); 
     
-    public const string PageUrl = "soundConverter";
+    public const string PageUrl = "";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
 
     public class Model
