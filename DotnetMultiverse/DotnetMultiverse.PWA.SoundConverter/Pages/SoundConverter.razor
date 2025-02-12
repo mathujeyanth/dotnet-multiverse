@@ -2,15 +2,11 @@
 @rendermode InteractiveWebAssembly
 @implements IAsyncDisposable
 
-@using System.Collections.Concurrent
 @using System.IO
-@using System.Threading
-@using DotnetMultiverse.Shared.SoundConverter
-@using DotnetMultiverse.Shared.SoundConverter.AudioFormats
 @using FluentValidation
 
 @inject IJSRuntime JsRuntime
-@inject AudioHandler AudioHandler
+@inject IConversionScheduler ConversionScheduler
 
 <PageTitle>Sound Converter</PageTitle>
 
@@ -155,18 +151,8 @@
 </script>
 
 @code {
-    private class ProgressTableRow
-    {
-        public required Guid Guid { get; init; } 
-        public required string From { get; set; }
-        public required string To { get; set; }
-        public required string FileName { get; init; }
-        public double Progress { get; set; }
-        public bool IsFinished { get; set; }
-        public IAudio? OutputAudio { get; set; }
-    }
 
-    private readonly IDictionary<Guid, ProgressTableRow> _guidToProgress = new Dictionary<Guid, ProgressTableRow>(); 
+    private readonly IDictionary<Guid, ConvertedAudio> _guidToProgress = new Dictionary<Guid, ConvertedAudio>(); 
     
     public const string PageUrl = "";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
@@ -184,87 +170,20 @@
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     private string _dragClass = DefaultDragClass;
     private const int MaxUploadFiles = 5;
+    private const string ConvertToFormat = "ogg";
     
-    private class ConversionScheduler(AudioHandler audioHandler)
-    {
-        public event Func<Task> OnChangeAsync = null!;
-        private void NotifyStateChanged() => OnChangeAsync.Invoke();
-        private Thread? _thread;
-        
-        private readonly ConcurrentQueue<(ProgressTableRow progressTableRow, IAudio audio)> _concurrentQueue = new();
-
-        public void AddToQueue(ProgressTableRow progressTableRow, IAudio audio)
-        {
-            _concurrentQueue.Enqueue((progressTableRow, audio));
-        }
-
-        private async Task Converter()
-        {
-            while (!_concurrentQueue.IsEmpty)
-            {
-                if (!_concurrentQueue.TryDequeue(out var result))
-                {
-                    throw new Exception();
-                }
-
-                var inputAudio = result.audio;
-                var progressHandler = new Progress<double>(progress =>
-                {
-                    result.progressTableRow.Progress = progress;
-                    NotifyStateChanged();
-                });
-                    
-                result.progressTableRow.OutputAudio = await audioHandler.ToOgg(inputAudio, progressHandler);
-                result.progressTableRow.Progress = 1;
-                result.progressTableRow.IsFinished = true;
-                NotifyStateChanged();
-            }
-        }
-
-        public void StartConverting()
-        {
-            
-            if (_thread is not null && _thread.IsAlive) return;
-            _thread = new Thread(async void () => await Converter());
-            _thread.Start();
-        }
-    }
-
-    private ConversionScheduler _conversionScheduler = null!;
-
-    private async Task Convert()
+    private void Convert()
     {
         if (!_isValid ||_model.Files is null) throw new Exception();
         var files = _model.Files.ToArray();
         _model.Files = new List<IBrowserFile>();
-        // Design Revision: Potentially use a queuing mechanism, to allow only converting three at a time, and to avoid running too many concurrent converts.
-        var guidToFile = new Dictionary<Guid, IBrowserFile>(); 
         foreach (var file in files)
         {
-            var guid = Guid.NewGuid();
-            var progressTableRow = new ProgressTableRow
-            {
-                Guid = Guid.NewGuid(),
-                From = "mp3",
-                To = "ogg",
-                FileName = file.Name,
-                OutputAudio = null
-            };
-            _guidToProgress[guid] = progressTableRow;
-            guidToFile[guid] = file;
+            var convertedAudio = ConversionScheduler.AddToQueue(file, ConvertToFormat);
+            _guidToProgress[convertedAudio.Guid] = convertedAudio;
         }
-        
 
-        foreach (var (key, file) in guidToFile)
-        {
-            var progressTableRow = _guidToProgress[key];
-            var inputAudio = await AudioHandler.ValidateAndCreateAudio(file);
-        
-            _conversionScheduler.AddToQueue(progressTableRow, inputAudio);
-            
-            guidToFile.Remove(key);
-        }
-        _conversionScheduler.StartConverting();
+        ConversionScheduler.StartConverting();
     }
     
     private void SetDragClass()
@@ -316,15 +235,14 @@
 
     protected override Task OnInitializedAsync()
     {
-        _conversionScheduler = new ConversionScheduler(AudioHandler);
-        _conversionScheduler.OnChangeAsync += Refresh;
+        ConversionScheduler.OnChangeAsync += Refresh;
         return base.OnInitializedAsync();
     }
 
     public async ValueTask DisposeAsync()
     {
         if (_fileUpload != null) await _fileUpload.DisposeAsync();
-        _conversionScheduler.OnChangeAsync -= Refresh;
+        ConversionScheduler.OnChangeAsync -= Refresh;
     }
     
     async Task Refresh()

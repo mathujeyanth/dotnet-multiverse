@@ -65,8 +65,8 @@ async function onFetch(event) {
     });
 
     // Add COOP and COEP headers to the new Response. TODO: is it bad to do it for everything?
-    // modifiedResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-    // modifiedResponse.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+    modifiedResponse.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    modifiedResponse.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
 
     // Return the modified response
     return modifiedResponse;
