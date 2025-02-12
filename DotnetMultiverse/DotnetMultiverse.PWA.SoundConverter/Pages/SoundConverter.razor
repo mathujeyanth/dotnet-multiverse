@@ -3,6 +3,7 @@
 @implements IAsyncDisposable
 
 @using System.IO
+@using DotnetMultiverse.Shared.SoundConverter.ConversionScheduler
 @using FluentValidation
 
 @inject IJSRuntime JsRuntime
@@ -104,7 +105,7 @@
             {
                 <MudTable 
                     Items="_guidToProgress.ToList()"
-                    Loading="@(_guidToProgress.Values.Any(x => !x.IsFinished))"
+                    Loading="@(_guidToProgress.Values.Any(x => !x.convertedAudio.IsFinished))"
                     Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None" RowsPerPage="@MaxUploadFiles">
                     <HeaderContent>
                         <MudTh>File Name</MudTh>
@@ -113,17 +114,17 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="File Name">
-                            @context.Value.FileName
+                            @context.Value.fileName
                         </MudTd>
                         <MudTd DataLabel="Progress">
-                            <MudProgressLinear Color="Color.Primary" Striped="@(!context.Value.IsFinished)" Value="@context.Value.Progress" Min="0" Max="1" Size="Size.Large">
+                            <MudProgressLinear Color="Color.Primary" Striped="@(!context.Value.convertedAudio.IsFinished)" Value="@context.Value.convertedAudio.Progress" Min="0" Max="1" Size="Size.Large">
                                 <MudText>
-                                    @((int)(context.Value.Progress * 100))%
+                                    @((int)(context.Value.convertedAudio.Progress * 100))%
                                 </MudText>
                             </MudProgressLinear>
                         </MudTd>
                         <MudTd DataLabel="Download">
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary" Disabled="@(!context.Value.IsFinished)" OnClick="@(()=>  DownloadFileFromStream(context.Key))"/>
+                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary" Disabled="@(!context.Value.convertedAudio.IsFinished)" OnClick="@(()=>  DownloadFileFromStream(context.Key))"/>
                         </MudTd>
                     </RowTemplate>
                     <PagerContent>
@@ -152,7 +153,7 @@
 
 @code {
 
-    private readonly IDictionary<Guid, ConvertedAudio> _guidToProgress = new Dictionary<Guid, ConvertedAudio>(); 
+    private readonly IDictionary<Guid, (string fileName, ConvertedAudio convertedAudio)> _guidToProgress = new Dictionary<Guid, (string fileName, ConvertedAudio convertedAudio)>(); 
     
     public const string PageUrl = "";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
@@ -169,8 +170,7 @@
     private bool _isTouched;
     private const string DefaultDragClass = "relative rounded-lg border-2 border-dashed pa-4 mt-4 mud-width-full mud-height-full";
     private string _dragClass = DefaultDragClass;
-    private const int MaxUploadFiles = 5;
-    private const string ConvertToFormat = "ogg";
+    private const int MaxUploadFiles = 20;
     
     private void Convert()
     {
@@ -179,8 +179,8 @@
         _model.Files = new List<IBrowserFile>();
         foreach (var file in files)
         {
-            var convertedAudio = ConversionScheduler.AddToQueue(file, ConvertToFormat);
-            _guidToProgress[convertedAudio.Guid] = convertedAudio;
+            var convertedAudio = ConversionScheduler.AddToQueue(file);
+            _guidToProgress[convertedAudio.Guid] = (file.Name, convertedAudio);
         }
 
         ConversionScheduler.StartConverting();
@@ -225,8 +225,8 @@
     private async Task DownloadFileFromStream(Guid guid)
     {
         var file = _guidToProgress[guid];
-        var fileName = file.FileName;
-        using var outputAudio = file.OutputAudio!;
+        var fileName = file.fileName;
+        using var outputAudio = file.convertedAudio.OutputAudio!;
         outputAudio.AudioStream.Seek(0, SeekOrigin.Begin);
         using var streamRef = new DotNetStreamReference(stream: outputAudio.AudioStream);
         var newFileName = $"{Path.GetFileNameWithoutExtension(fileName)} - converted.{outputAudio.Extension}";
@@ -235,18 +235,21 @@
 
     protected override Task OnInitializedAsync()
     {
-        ConversionScheduler.OnChangeAsync += Refresh;
+        ConversionScheduler.OnProgressAsync += ProgressUpdated;
         return base.OnInitializedAsync();
     }
 
     public async ValueTask DisposeAsync()
     {
         if (_fileUpload != null) await _fileUpload.DisposeAsync();
-        ConversionScheduler.OnChangeAsync -= Refresh;
+        ConversionScheduler.OnProgressAsync -= ProgressUpdated;
     }
     
-    async Task Refresh()
+    async Task ProgressUpdated(ConvertedAudio convertedAudio)
     {
+        _guidToProgress[convertedAudio.Guid].convertedAudio.Progress = convertedAudio.Progress;
+        _guidToProgress[convertedAudio.Guid].convertedAudio.IsFinished = convertedAudio.IsFinished;
+        _guidToProgress[convertedAudio.Guid].convertedAudio.OutputAudio = convertedAudio.OutputAudio;
         await InvokeAsync(StateHasChanged);
     }
 }
