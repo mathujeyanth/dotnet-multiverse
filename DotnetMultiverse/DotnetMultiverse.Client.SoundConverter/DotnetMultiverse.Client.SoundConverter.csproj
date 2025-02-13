@@ -16,5 +16,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj" />
+      <ProjectReference Include="..\DotnetMultiverse.Blazor.ClassLib.SoundConverter\DotnetMultiverse.Blazor.ClassLib.SoundConverter.csproj" />
     </ItemGroup>
 </Project>

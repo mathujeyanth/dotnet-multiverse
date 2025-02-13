@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
@@ -18,15 +19,15 @@ public class AudioHandler(Mp3Handler mp3Handler)
         return browserFile.ContentType switch
         {
             "audio/mpeg" => await mp3Handler.TryCreateAudio(newAudioStream),
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(browserFile.ContentType)
         };
     }
 
-    public async Task<IAudio> ToOgg(IAudio audio, IProgress<double> progress)
+    public async Task<IAudio> ToOgg(IAudio audio, IProgress<double> progress, CancellationToken cancellationToken = default)
     {
         return audio switch
         {
-            Mp3Audio mp3Audio => await mp3Audio.Mp3ToOgg(progress),
+            Mp3Audio mp3Audio => await mp3Audio.Mp3ToOgg(progress, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(audio), audio, null)
         };
     }

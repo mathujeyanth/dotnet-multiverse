@@ -8,5 +8,5 @@ public interface IConversionScheduler
 {
     public ConvertedAudio AddToQueue(IBrowserFile file);
     public void StartConverting();
-    public event Func<ConvertedAudio, Task> OnProgressAsync;
+    public event Func<ConvertedAudio, Task>? OnProgressAsync;
 }
