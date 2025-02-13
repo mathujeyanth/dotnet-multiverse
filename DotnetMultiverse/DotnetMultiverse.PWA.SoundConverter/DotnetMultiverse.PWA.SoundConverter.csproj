@@ -18,10 +18,16 @@
 
     <ItemGroup>
         <ProjectReference Include="..\DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj" />
+        <ProjectReference Include="..\DotnetMultiverse.Blazor.ClassLib.SoundConverter\DotnetMultiverse.Blazor.ClassLib.SoundConverter.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Components\Component1.razor" />
+      <_ContentIncludedByDefault Remove="Components\Test.razor" />
     </ItemGroup>
 
 </Project>

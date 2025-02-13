@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 using NAudio.Wave;
@@ -14,7 +15,7 @@ internal static class Mp3ToOggConverter
     private const int WriteBufferSize = 1024 * 1024;
 
     public static async Task<OggAudio> Mp3ToOgg(this Mp3Audio mp3Audio,
-        IProgress<double> progress)
+        IProgress<double> progress, CancellationToken cancellationToken = default)
     {
         mp3Audio.AudioStream.Seek(0, SeekOrigin.Begin);
         await using var mp3FileReaderBase = new Mp3FileReaderBase(mp3Audio.AudioStream, wf => new Mp3FrameDecompressor(wf));
@@ -43,6 +44,10 @@ internal static class Mp3ToOggConverter
 
         while (true)
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
             var chunkSize = mp3FileReaderBase.Read(pcm, 0, WriteBufferSize);
 
             status += chunkSize;
@@ -58,11 +63,11 @@ internal static class Mp3ToOggConverter
                 outSamples[1][sampleNumber] = BitConverter.ToSingle(pcm, sampleIndex + pcmSampleSize);
             }
 
-            await FlushPages(oggStream, outputStream, false);
-            ProcessChunk(outSamples, processingState, oggStream, numOutputSamples);
+            await FlushPages(oggStream, outputStream, false, cancellationToken);
+            ProcessChunk(outSamples, processingState, oggStream, numOutputSamples, cancellationToken);
         }
 
-        await FlushPages(oggStream, outputStream, true);
+        await FlushPages(oggStream, outputStream, true, cancellationToken);
         
         using var vorbis = new VorbisReader(outputStream, closeOnDispose: false);
         return new OggAudio
@@ -73,12 +78,16 @@ internal static class Mp3ToOggConverter
         };
     }
 
-    private static async Task FlushPages(OggStream oggStream, Stream output, bool force)
+    private static async Task FlushPages(OggStream oggStream, Stream output, bool force, CancellationToken cancellationToken = default)
     {
         while (oggStream.PageOut(out var page, force))
         {
-            await output.WriteAsync(page.Header.AsMemory(0, page.Header.Length));
-            await output.WriteAsync(page.Body.AsMemory(0, page.Body.Length));
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+            await output.WriteAsync(page.Header.AsMemory(0, page.Header.Length), cancellationToken);
+            await output.WriteAsync(page.Body.AsMemory(0, page.Body.Length), cancellationToken);
         }
     }
 
@@ -106,12 +115,16 @@ internal static class Mp3ToOggConverter
     }
 
     private static void ProcessChunk(float[][] floatSamples, ProcessingState processingState, OggStream oggStream,
-        int writeBufferSize)
+        int writeBufferSize, CancellationToken cancellationToken = default)
     {
         processingState.WriteData(floatSamples, writeBufferSize);
 
         while (!oggStream.Finished && processingState.PacketOut(out var packet))
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+            }
             oggStream.PacketIn(packet);
         }
     }

@@ -11,10 +11,10 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<Routes>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped<AudioHandler>();
-builder.Services.AddScoped<Mp3Handler>();
-builder.Services.AddScoped<IConversionScheduler, ConversionScheduler>();
-
-builder.Services.AddMudServices();
+builder.Services
+    .AddScoped<AudioHandler>()
+    .AddScoped<Mp3Handler>()
+    .AddScoped<IConversionScheduler, ConversionScheduler>()
+    .AddMudServices();
 
 await builder.Build().RunAsync();

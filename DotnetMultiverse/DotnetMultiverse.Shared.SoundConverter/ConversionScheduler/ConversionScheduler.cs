@@ -2,13 +2,14 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace DotnetMultiverse.Shared.SoundConverter.ConversionScheduler;
 
 public class ConversionScheduler(AudioHandler audioHandler) : IConversionScheduler
 {
-    public event Func<ConvertedAudio, Task> OnProgressAsync = null!;
+    public event Func<ConvertedAudio, Task>? OnProgressAsync;
     private const int MaxThreads = 3;
     private int _threadCount;
         
@@ -24,37 +25,56 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
         };
     }
 
-    private async Task Converter()
+    private async Task Converter(CancellationTokenSource cancellationTokenSource)
     {
         while (!_concurrentQueue.IsEmpty)
         {
             if (!_concurrentQueue.TryDequeue(out var result))
             {
-                throw new Exception();
+                throw new ApplicationException("Queue is empty");
             }
-
+            Console.WriteLine($"Converting {result.file.Name}");
             var inputAudio = await audioHandler.ValidateAndCreateAudio(result.file);
+            
             var progressHandler = new Progress<double>(progress =>
             {
-                OnProgressAsync.Invoke(new ConvertedAudio
+                try
                 {
-                    Guid = result.guid,
-                    Progress = progress,
-                    IsFinished = false
-                });
+                    UpdateProgress(result.guid, progress);
+                }
+                catch (ApplicationException e)
+                {
+                    Console.WriteLine(e);
+                    Console.WriteLine("In progress handler \n\n");
+                    cancellationTokenSource.Cancel();
+                }
             });
-                    
-            var audio = await audioHandler.ToOgg(inputAudio, progressHandler);
-            _ = OnProgressAsync.Invoke(new ConvertedAudio
+            try
             {
-                Guid = result.guid,
-                Progress = 1,
-                IsFinished = true,
-                OutputAudio = audio
-            });
+                var audio = await audioHandler.ToOgg(inputAudio, progressHandler, cancellationTokenSource.Token);
+                UpdateProgress(result.guid, 1, true, audio);
+                Console.WriteLine($"Converted {result.file.Name}");
+            }
+            catch (Exception e) when (e is ApplicationException or OperationCanceledException)
+            {
+                Console.WriteLine("In converter\n\n");
+                Console.WriteLine($"Failed converting {result.file.Name}");
+                Console.WriteLine(e);
+                return;
+            }
         }
+    }
 
-        _threadCount--;
+    private void UpdateProgress(Guid guid, double progress, bool isFinished = false, IAudio? audio = null)
+    {
+        if (OnProgressAsync is null) throw new ApplicationException("OnProgressAsync is null");
+        OnProgressAsync.Invoke(new ConvertedAudio
+        {
+            Guid = guid,
+            Progress = progress,
+            IsFinished = isFinished,
+            OutputAudio = audio
+        });
     }
 
     public void StartConverting()
@@ -64,7 +84,24 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
         for (int i = 0; i < maxThreadCount; i++)
         {
             _threadCount++;
-            new Thread(async void () => await Converter()).Start();
+            new Thread(async void () =>
+            {
+                try
+                {
+                    using var tokenSource = new CancellationTokenSource();
+                    await Converter(tokenSource);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Exiting");
+                    Console.WriteLine(e);
+                }
+                finally
+                {
+                    _threadCount--;
+                }
+
+            }).Start();
         }
     }
 }
