@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="DotnetMultiverse.PWA.SoundConverter" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="Serve PWA" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/CustomDevServer/bin/Debug/net9.0/CustomDevServer.dll" />
     <option name="PROGRAM_PARAMETERS" value="--applicationpath $PROJECT_DIR$/DotnetMultiverse/DotnetMultiverse.PWA.SoundConverter/bin/Debug/net9.0/DotnetMultiverse.PWA.SoundConverter.dll --apply-cop-headers" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DotnetMultiverse.PWA.SoundConverter" />
