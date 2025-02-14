@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Serve PWA" type="DotNetProject" factoryName=".NET Project">
+  <configuration default="false" name="ServePWA" type="DotNetProject" factoryName=".NET Project">
     <option name="EXE_PATH" value="$PROJECT_DIR$/CustomDevServer/bin/Debug/net9.0/CustomDevServer.dll" />
-    <option name="PROGRAM_PARAMETERS" value="--applicationpath $PROJECT_DIR$/DotnetMultiverse/DotnetMultiverse.PWA.SoundConverter/bin/Debug/net9.0/DotnetMultiverse.PWA.SoundConverter.dll --apply-cop-headers" />
+    <option name="PROGRAM_PARAMETERS" value="--applicationpath $PROJECT_DIR$/DotnetMultiverse.PWA.SoundConverter/bin/Debug/net9.0/  --assemblyname DotnetMultiverse.PWA.SoundConverter --apply-cop-headers" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/DotnetMultiverse.PWA.SoundConverter" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
@@ -12,11 +12,13 @@
     <option name="RUNTIME_ARGUMENTS" value="" />
     <option name="PROJECT_PATH" value="$PROJECT_DIR$/DotnetMultiverse.PWA.SoundConverter/DotnetMultiverse.PWA.SoundConverter.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="0" />
-    <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+    <option name="PROJECT_ARGUMENTS_TRACKING" value="0" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
     <option name="PROJECT_KIND" value="DotNetCore" />
     <option name="PROJECT_TFM" value="net9.0" />
     <method v="2">
+      <option name="Build Solution" enabled="true" />
+      <option name="Build" default="false" projectName="CustomDevServer" projectPath="$PROJECT_DIR$/CustomDevServer/CustomDevServer.csproj" />
       <option name="Build" />
     </method>
   </configuration>

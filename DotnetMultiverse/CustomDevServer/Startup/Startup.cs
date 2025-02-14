@@ -5,22 +5,27 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 
 namespace CustomDevServer.Startup;
 
 internal static class Startup
 {
-    public static void AddMiddleware(this IApplicationBuilder app, IConfiguration configuration)
+    public static WebApplication AddMiddleware(this WebApplication app)
     {
-        app.UseDeveloperExceptionPage();
-        EnableConfiguredPathbase(app, configuration);
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseWebAssemblyDebugging();
+        }
+        
+        app.EnableConfiguredPathBase();
 
-        app.UseWebAssemblyDebugging();
-
-        var webHostEnvironment = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
-        var applyCopHeaders = configuration.GetValue<bool>("ApplyCopHeaders");
-        Console.WriteLine($"ApplyCopHeaders: {applyCopHeaders}");
+        var webHostEnvironment = app.Services.GetRequiredService<IWebHostEnvironment>();
+        var applyCopHeaders = app.Configuration.GetValue<bool>("ApplyCopHeaders");
+        app.Logger.LogDebug($"ApplyCopHeaders: {applyCopHeaders}");
         applyCopHeaders = true;
         app.Use(async (ctx, next) =>
         {
@@ -34,7 +39,7 @@ internal static class Startup
                 if (string.Equals(fileExtension, ".js", StringComparison.OrdinalIgnoreCase) || string.Equals(fileExtension, ".mjs", StringComparison.OrdinalIgnoreCase))
                 {
                     // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
-                    ApplyCrossOriginPolicyHeaders(ctx);
+                    ctx.ApplyCrossOriginPolicyHeaders();
                 }
             }
 
@@ -47,61 +52,59 @@ internal static class Startup
         {
             // In development, serve everything, as there's no other way to configure it.
             // In production, developers are responsible for configuring their own production server
-            ServeUnknownFileTypes = true,
+            ServeUnknownFileTypes = true
         });
 
-        app.UseEndpoints(endpoints =>
+        var manifest = app.Configuration["staticAssets"]!;
+        app.MapStaticAssets(manifest);
+        app.MapFallbackToFile("index.html", new StaticFileOptions
         {
-            var manifest = configuration["staticAssets"]!;
-            endpoints.MapStaticAssets(manifest);
-            endpoints.MapFallbackToFile("index.html", new StaticFileOptions
+            OnPrepareResponse = fileContext =>
             {
-                OnPrepareResponse = fileContext =>
-                {
-                    // Avoid caching index.html during development.
-                    // When hot reload is enabled, a middleware injects a hot reload script into the response HTML.
-                    // We don't want the browser to bypass this injection by using a cached response that doesn't
-                    // contain the injected script. In the future, if script injection is removed in favor of a
-                    // different mechanism, we can delete this comment and the line below it.
-                    // See also: https://github.com/dotnet/aspnetcore/issues/45213
-                    fileContext.Context.Response.Headers[HeaderNames.CacheControl] = "no-store";
+                // Avoid caching index.html during development.
+                // When hot reload is enabled, a middleware injects a hot reload script into the response HTML.
+                // We don't want the browser to bypass this injection by using a cached response that doesn't
+                // contain the injected script. In the future, if script injection is removed in favor of a
+                // different mechanism, we can delete this comment and the line below it.
+                // See also: https://github.com/dotnet/aspnetcore/issues/45213
+                fileContext.Context.Response.Headers[HeaderNames.CacheControl] = "no-store";
 
-                    if (applyCopHeaders)
-                    {
-                        // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
-                        ApplyCrossOriginPolicyHeaders(fileContext.Context);
-                    }
+                if (applyCopHeaders)
+                {
+                    // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
+                    fileContext.Context.ApplyCrossOriginPolicyHeaders();
                 }
-            });
+            }
         });
+        return app;
     }
 
-    private static void EnableConfiguredPathbase(IApplicationBuilder app, IConfiguration configuration)
+    private static void EnableConfiguredPathBase(this WebApplication app)
     {
-        var pathBase = configuration.GetValue<string>("pathbase");
-        if (!string.IsNullOrEmpty(pathBase))
+        var pathBase = app.Configuration.GetValue<string>("pathbase");
+        if (string.IsNullOrEmpty(pathBase))
         {
-            app.UsePathBase(pathBase);
-
-            // To ensure consistency with a production environment, only handle requests
-            // that match the specified pathbase.
-            app.Use((context, next) =>
-            {
-                if (context.Request.PathBase == pathBase)
-                {
-                    return next(context);
-                }
-                else
-                {
-                    context.Response.StatusCode = 404;
-                    return context.Response.WriteAsync($"The server is configured only to " +
-                        $"handle request URIs within the PathBase '{pathBase}'.");
-                }
-            });
+            return;
         }
+
+        app.UsePathBase(pathBase);
+
+        // To ensure consistency with a production environment, only handle requests
+        // that match the specified pathbase.
+        app.Use((context, next) =>
+        {
+            if (context.Request.PathBase == pathBase)
+            {
+                return next(context);
+            }
+
+            context.Response.StatusCode = 404;
+            return context.Response.WriteAsync($"The server is configured only to " +
+                                               $"handle request URIs within the PathBase '{pathBase}'.");
+        });
     }
 
-    private static void ApplyCrossOriginPolicyHeaders(HttpContext httpContext)
+    private static void ApplyCrossOriginPolicyHeaders(this HttpContext httpContext)
     {
         httpContext.Response.Headers["Cross-Origin-Embedder-Policy"] = "require-corp";
         httpContext.Response.Headers["Cross-Origin-Opener-Policy"] = "same-origin";

@@ -6,10 +6,12 @@ using DotnetMultiverse.Shared.SoundConverter.AudioHandlers;
 using DotnetMultiverse.Shared.SoundConverter.ConversionScheduler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
 using MudBlazor.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +20,13 @@ builder.Services
     .AddInteractiveServerComponents()
     .AddInteractiveWebAssemblyComponents();
 
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false);
+
 builder.Services
     .AddRouting()
     .AddMudServices()
+    .AddSerilog(options => options.ReadFrom.Configuration(builder.Configuration))
     .AddSingleton<AudioHandler>()
     .AddSingleton<Mp3Handler>()
     .AddSingleton<IConversionScheduler, ConversionScheduler>();

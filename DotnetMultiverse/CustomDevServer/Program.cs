@@ -6,35 +6,37 @@ using CustomDevServer.Startup;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
 var applicationPath = args.SkipWhile(a => a != "--applicationpath").Skip(1).First();
-var applicationDirectory = Path.GetDirectoryName(applicationPath)!;
-var name = Path.ChangeExtension(applicationPath, ".staticwebassets.runtime.json");
-name = !File.Exists(name) ? Path.ChangeExtension(applicationPath, ".StaticWebAssets.xml") : name;
-var endpointsManifest = Path.ChangeExtension(applicationPath, ".staticwebassets.endpoints.json");
-
+var assemblyName = args.SkipWhile(a => a != "--assemblyname").Skip(1).First();
+var runtimeManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.runtime.json").SingleOrDefault();
+var endpointsManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.endpoints.json").Single();
 var inMemoryConfiguration = new Dictionary<string, string?>
 {
-    // [WebHostDefaults.EnvironmentKey] = "Development",
-    ["Logging:LogLevel:Microsoft"] = "Warning",
-    ["Logging:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
-    [WebHostDefaults.StaticWebAssetsKey] = name,
+    [WebHostDefaults.StaticWebAssetsKey] = runtimeManifest,
     ["staticAssets"] = endpointsManifest,
     ["ApplyCopHeaders"] = args.Contains("--apply-cop-headers").ToString(),
-    ["AllowedHosts"] = "*"
 };
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+{
+    Args = args,
+    WebRootPath = Path.Combine(applicationPath, "wwwroot")
+});
 
-builder.Configuration.AddInMemoryCollection(inMemoryConfiguration);
-builder.Configuration.AddJsonFile(Path.Combine(applicationDirectory, "blazor-devserversettings.json"), optional: true, reloadOnChange: true);
+builder.Configuration
+    .AddInMemoryCollection(inMemoryConfiguration)
+    .AddJsonFile(Path.Combine(Path.GetDirectoryName( typeof(Program).Assembly.Location)!, "appsettings.json"), optional: false);
 
-builder.Services.AddRouting();
+builder.Services
+    .AddSerilog(options => options.ReadFrom.Configuration(builder.Configuration))
+    .AddRouting();
+
+// Needed to serve when non-published wwwroot.
 builder.WebHost.UseStaticWebAssets();
 
-var app = builder.Build();
+builder
+    .Build()
+    .AddMiddleware()
+    .Run();
 
-var configuration = app.Configuration;
-app.AddMiddleware(configuration);
-
-app.Run();
