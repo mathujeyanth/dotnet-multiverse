@@ -21,6 +21,12 @@
                      @bind-IsTouched="_isTouched"
                      Validation="@_validationRules.ValidateValue">
                 <MudStack Spacing="3">
+                    @* BUG: Multiple file upload fails often with server side rendering, 
+                    where the IBrowserFile stream throws "Did not receive any data in the allotted time."
+                    Error occurs in ConversionScheduler class.
+                    Most likely due to:
+                    https://github.com/dotnet/aspnetcore/issues/38842
+                    https://github.com/dotnet/aspnetcore/issues/47301*@
                     <MudFileUpload T="IReadOnlyList<IBrowserFile>"
                                    @ref="@_fileUpload"
                                    @bind-Files="_model.Files"
