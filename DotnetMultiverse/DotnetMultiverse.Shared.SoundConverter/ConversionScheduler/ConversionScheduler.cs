@@ -4,10 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using DotnetMultiverse.Shared.SoundConverter.AudioFormats;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.Extensions.Logging;
 
 namespace DotnetMultiverse.Shared.SoundConverter.ConversionScheduler;
 
-public class ConversionScheduler(AudioHandler audioHandler) : IConversionScheduler
+public class ConversionScheduler(AudioHandler audioHandler, ILogger<ConversionScheduler> logger)
+    : IConversionScheduler
 {
     public event Func<ConvertedAudio, Task>? OnProgressAsync;
     private const int MaxThreads = 3;
@@ -33,7 +35,7 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
             {
                 throw new ApplicationException("Queue is empty");
             }
-            Console.WriteLine($"Converting {result.file.Name}");
+            logger.LogInformation($"Converting {result.file.Name}");
             var inputAudio = await audioHandler.ValidateAndCreateAudio(result.file);
             
             var progressHandler = new Progress<double>(progress =>
@@ -44,8 +46,7 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
                 }
                 catch (ApplicationException e)
                 {
-                    Console.WriteLine(e);
-                    Console.WriteLine("In progress handler \n\n");
+                    logger.LogError(e, "Error in progress handler");
                     cancellationTokenSource.Cancel();
                 }
             });
@@ -53,13 +54,11 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
             {
                 var audio = await audioHandler.ToOgg(inputAudio, progressHandler, cancellationTokenSource.Token);
                 UpdateProgress(result.guid, 1, true, audio);
-                Console.WriteLine($"Converted {result.file.Name}");
+                logger.LogInformation($"Converted {result.file.Name}");
             }
             catch (Exception e) when (e is ApplicationException or OperationCanceledException)
             {
-                Console.WriteLine("In converter\n\n");
-                Console.WriteLine($"Failed converting {result.file.Name}");
-                Console.WriteLine(e);
+                logger.LogError(e, $"Failed converting {result.file.Name}");
                 return;
             }
         }
@@ -81,7 +80,7 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
     {
         if (_threadCount >= MaxThreads) return;
         var maxThreadCount = int.Min(_concurrentQueue.Count, MaxThreads);
-        for (int i = 0; i < maxThreadCount; i++)
+        for (var i = 0; i < maxThreadCount; i++)
         {
             _threadCount++;
             new Thread(async void () =>
@@ -93,8 +92,7 @@ public class ConversionScheduler(AudioHandler audioHandler) : IConversionSchedul
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Exiting");
-                    Console.WriteLine(e);
+                    logger.LogError(e, "Terminating thread due to error");
                 }
                 finally
                 {

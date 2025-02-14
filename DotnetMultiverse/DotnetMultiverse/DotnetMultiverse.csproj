@@ -15,9 +15,10 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.1" />
         <PackageReference Include="MudBlazor" Version="8.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.1" />
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     </ItemGroup>
-    
+
     <ItemGroup>
-      <Folder Include="wwwroot\lib\" />
+        <None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
     </ItemGroup>
 </Project>
