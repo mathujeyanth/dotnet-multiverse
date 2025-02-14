@@ -1,16 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse", "DotnetMultiverse\DotnetMultiverse.csproj", "{214BFF03-77EE-4F82-818C-D0A85775FEE9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApp.SoundConverter", "ServerApp.SoundConverter\ServerApp.SoundConverter.csproj", "{214BFF03-77EE-4F82-818C-D0A85775FEE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Shared.SoundConverter", "DotnetMultiverse.Shared.SoundConverter\DotnetMultiverse.Shared.SoundConverter.csproj", "{4AED868C-91C7-43B8-A6A1-84B266C621F3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Module.SoundConverter", "Module.SoundConverter\Module.SoundConverter.csproj", "{4AED868C-91C7-43B8-A6A1-84B266C621F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Client.SoundConverter", "DotnetMultiverse.Client.SoundConverter\DotnetMultiverse.Client.SoundConverter.csproj", "{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApp.SoundConverter", "ClientApp.SoundConverter\ClientApp.SoundConverter.csproj", "{CD307DF4-2059-4003-85FD-A9A6B9E67CE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.PWA.SoundConverter", "DotnetMultiverse.PWA.SoundConverter\DotnetMultiverse.PWA.SoundConverter.csproj", "{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PWA.SoundConverter", "PWA.SoundConverter\PWA.SoundConverter.csproj", "{14898DF4-26F4-4FCA-9A45-968A1F4CCB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomDevServer", "CustomDevServer\CustomDevServer.csproj", "{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApp.CustomDevServer", "ServerApp.CustomDevServer\ServerApp.CustomDevServer.csproj", "{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetMultiverse.Blazor.ClassLib.SoundConverter", "DotnetMultiverse.Blazor.ClassLib.SoundConverter\DotnetMultiverse.Blazor.ClassLib.SoundConverter.csproj", "{44F13F83-598A-4846-961E-2DDC88AA3AB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorComponent.SoundConverter", "BlazorComponent.SoundConverter\BlazorComponent.SoundConverter.csproj", "{44F13F83-598A-4846-961E-2DDC88AA3AB2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorComponent.SoundConverter", "BlazorComponent.SoundConverter", "{C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Module.SoundConverter", "Module.SoundConverter", "{EE297094-210D-4826-87CC-B7F8D5175549}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.SoundConverter", "App.SoundConverter", "{D27B4463-DC77-46E5-B662-273B6454AC98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PWA.SoundConverter", "PWA.SoundConverter", "{939EEAE6-8306-40BB-9BF5-142692783577}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App.DevServer", "App.DevServer", "{9D9BD0B9-3F81-48FD-9AD3-B65859BF7C12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +52,13 @@ Global
 		{44F13F83-598A-4846-961E-2DDC88AA3AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44F13F83-598A-4846-961E-2DDC88AA3AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44F13F83-598A-4846-961E-2DDC88AA3AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{44F13F83-598A-4846-961E-2DDC88AA3AB2} = {C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B}
+		{4AED868C-91C7-43B8-A6A1-84B266C621F3} = {EE297094-210D-4826-87CC-B7F8D5175549}
+		{214BFF03-77EE-4F82-818C-D0A85775FEE9} = {D27B4463-DC77-46E5-B662-273B6454AC98}
+		{CD307DF4-2059-4003-85FD-A9A6B9E67CE6} = {D27B4463-DC77-46E5-B662-273B6454AC98}
+		{14898DF4-26F4-4FCA-9A45-968A1F4CCB27} = {939EEAE6-8306-40BB-9BF5-142692783577}
+		{0A8EABC4-1833-4A80-A7BD-E861A0AB97E3} = {9D9BD0B9-3F81-48FD-9AD3-B65859BF7C12}
 	EndGlobalSection
 EndGlobal
