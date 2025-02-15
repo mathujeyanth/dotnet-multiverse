@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="DotnetMultiverse" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/ServerApp.SoundConverter/bin/Debug/net9.0/ServerApp.SoundConverter.exe" />
+    <option name="EXE_PATH" value="$PROJECT_DIR$/MJ.ServerApp.SoundConverter/bin/Debug/net9.0/MJ.ServerApp.SoundConverter.exe" />
     <option name="PROGRAM_PARAMETERS" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ServerApp.SoundConverter" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MJ.ServerApp.SoundConverter" />
     <option name="PASS_PARENT_ENVS" value="1" />
     <envs>
       <env name="ASPNETCORE_ENVIRONMENT" value="Development" />
@@ -11,7 +11,7 @@
     <option name="USE_EXTERNAL_CONSOLE" value="0" />
     <option name="USE_MONO" value="0" />
     <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/ServerApp.SoundConverter/ServerApp.SoundConverter.csproj" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/MJ.ServerApp.SoundConverter/MJ.ServerApp.SoundConverter.csproj" />
     <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
     <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
     <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
