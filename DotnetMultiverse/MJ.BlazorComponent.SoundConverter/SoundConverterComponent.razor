@@ -169,7 +169,6 @@
 
     private readonly IDictionary<Guid, (string fileName, ConvertedAudio convertedAudio)> _guidToProgress = new Dictionary<Guid, (string fileName, ConvertedAudio convertedAudio)>();
 
-    public const string PageUrl = "soundConverter";
     const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
 
     public class Model
