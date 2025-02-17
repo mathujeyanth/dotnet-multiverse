@@ -8,7 +8,7 @@ using NLayer.NAudioSupport;
 using NVorbis;
 using OggVorbisEncoder;
 
-namespace MJ.Module.SoundConverter.AudioHandlers;
+namespace MJ.Module.SoundConverter.IAudioCreators;
 
 internal static class Mp3ToOggConverter
 {

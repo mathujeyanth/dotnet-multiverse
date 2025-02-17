@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
 using MJ.Module.SoundConverter.AudioFormats;
-using MJ.Module.SoundConverter.AudioHandlers;
+using MJ.Module.SoundConverter.IAudioCreators;
 
-namespace MJ.Module.SoundConverter;
+namespace MJ.Module.SoundConverter.AudioHandler;
 
-public class AudioHandler(Mp3Handler mp3Handler)
+public class AudioHandler(Mp3IAudioCreator mp3IAudioCreator) : IAudioHandler
 {
     private const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
     public async Task<IAudio> ValidateAndCreateAudio(IBrowserFile browserFile)
@@ -18,7 +18,7 @@ public class AudioHandler(Mp3Handler mp3Handler)
         await audioStream.CopyToAsync(newAudioStream);
         return browserFile.ContentType switch
         {
-            "audio/mpeg" => await mp3Handler.TryCreateAudio(newAudioStream),
+            "audio/mpeg" => await mp3IAudioCreator.TryCreateAudio(newAudioStream),
             _ => throw new ArgumentOutOfRangeException(browserFile.ContentType)
         };
     }
