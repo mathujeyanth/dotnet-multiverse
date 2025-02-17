@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using MJ.Module.SoundConverter.AudioFormats;
+using MJ.Module.SoundConverter.AudioHandler;
 
 namespace MJ.Module.SoundConverter.ConversionScheduler;
 
-public class ConversionScheduler(AudioHandler audioHandler, ILogger<ConversionScheduler> logger)
+public class ConversionScheduler(IAudioHandler audioHandler, ILogger<ConversionScheduler> logger)
     : IConversionScheduler
 {
     public event Func<ConvertedAudio, Task>? OnProgressAsync;

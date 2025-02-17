@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using MJ.ServerApp.SoundConverter.Components;
-using MJ.Module.SoundConverter;
-using MJ.Module.SoundConverter.AudioHandlers;
 using MJ.Module.SoundConverter.ConversionScheduler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Net.Http.Headers;
+using MJ.Module.SoundConverter.AudioHandler;
+using MJ.Module.SoundConverter.IAudioCreators;
 using MudBlazor.Services;
 using Serilog;
 
@@ -27,8 +27,8 @@ builder.Services
     .AddRouting()
     .AddMudServices()
     .AddSerilog(options => options.ReadFrom.Configuration(builder.Configuration))
-    .AddSingleton<AudioHandler>()
-    .AddSingleton<Mp3Handler>()
+    .AddSingleton<IAudioHandler, AudioHandler>()
+    .AddSingleton<Mp3IAudioCreator>()
     .AddSingleton<IConversionScheduler, ConversionScheduler>();
 
 var app = builder.Build();

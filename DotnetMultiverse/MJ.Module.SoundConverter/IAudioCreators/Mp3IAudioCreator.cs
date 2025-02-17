@@ -4,9 +4,9 @@ using MJ.Module.SoundConverter.AudioFormats;
 using NAudio.Wave;
 using NLayer.NAudioSupport;
 
-namespace MJ.Module.SoundConverter.AudioHandlers;
+namespace MJ.Module.SoundConverter.IAudioCreators;
 
-public class Mp3Handler : IAudioHandler
+public class Mp3IAudioCreator : IAudioCreator
 {
     public async Task<IAudio> TryCreateAudio(Stream audioStream)
     {
