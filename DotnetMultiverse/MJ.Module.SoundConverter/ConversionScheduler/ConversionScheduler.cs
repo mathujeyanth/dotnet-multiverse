@@ -15,7 +15,7 @@ public class ConversionScheduler(IAudioHandler audioHandler, ILogger<ConversionS
     public event Func<ConvertedAudio, Task>? OnProgressAsync;
     private const int MaxThreads = 3;
     private int _threadCount;
-        
+
     private readonly ConcurrentQueue<(Guid guid, IBrowserFile file)> _concurrentQueue = new();
 
     public ConvertedAudio AddToQueue(IBrowserFile file)
@@ -32,13 +32,11 @@ public class ConversionScheduler(IAudioHandler audioHandler, ILogger<ConversionS
     {
         while (!_concurrentQueue.IsEmpty)
         {
-            if (!_concurrentQueue.TryDequeue(out var result))
-            {
-                throw new ApplicationException("Queue is empty");
-            }
+            if (!_concurrentQueue.TryDequeue(out var result)) throw new ApplicationException("Queue is empty");
+
             logger.LogInformation($"Converting {result.file.Name}");
             var inputAudio = await audioHandler.ValidateAndCreateAudio(result.file);
-            
+
             var progressHandler = new Progress<double>(progress =>
             {
                 try
@@ -99,7 +97,6 @@ public class ConversionScheduler(IAudioHandler audioHandler, ILogger<ConversionS
                 {
                     _threadCount--;
                 }
-
             }).Start();
         }
     }

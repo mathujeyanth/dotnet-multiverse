@@ -6,7 +6,8 @@
 <MudStack AlignItems="AlignItems.Center">
     <MudText Typo="Typo.h1">Weather</MudText>
     <MudText>This component demonstrates showing data.</MudText>
-    <MudTable Items="_forecasts" Loading="!_forecasts.Any()" Hover="true" Dense="true" HorizontalScrollbar="true" Outlined="true">
+    <MudTable Items="_forecasts" Loading="!_forecasts.Any()" Hover="true" Dense="true" HorizontalScrollbar="true"
+              Outlined="true">
         <HeaderContent>
             <MudTh>Date</MudTh>
             <MudTh>Temp. (C)</MudTh>
@@ -32,7 +33,7 @@
         await Task.Delay(500);
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] {"Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"};
+        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
         _forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = startDate.AddDays(index),
@@ -46,7 +47,7 @@
         public DateOnly Date { get; set; }
         public int TemperatureC { get; set; }
         public string? Summary { get; set; }
-        public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
     }
 
 }

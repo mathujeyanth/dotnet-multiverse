@@ -14,8 +14,8 @@ public class Mp3IAudioCreator : IAudioCreator
         await using var mp3FileReaderBase = new Mp3FileReaderBase(audioStream, wf => new Mp3FrameDecompressor(wf));
         return new Mp3Audio
         {
-            AudioStream = audioStream, 
-            Duration = mp3FileReaderBase.TotalTime, 
+            AudioStream = audioStream,
+            Duration = mp3FileReaderBase.TotalTime,
             SampleRate = mp3FileReaderBase.WaveFormat.SampleRate
         };
     }

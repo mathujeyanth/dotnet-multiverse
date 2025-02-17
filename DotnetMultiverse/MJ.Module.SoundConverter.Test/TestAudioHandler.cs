@@ -25,12 +25,12 @@ public class TestAudioHandler(ITestOutputHelper testOutputHelper)
         browserFile.Size.Returns(file.Length);
         browserFile.OpenReadStream().ReturnsForAnyArgs(new MemoryStream(file));
         var audio = await audioHandler.ValidateAndCreateAudio(browserFile);
-        
+
         var progress = Substitute.For<IProgress<double>>();
-        
+
         // ACT
         var convertedAudio = await audioHandler.ToOgg(audio, progress);
-        
+
         // ASSERT
         convertedAudio.Extension.Should().Be("ogg");
         convertedAudio.Duration.Should().BeCloseTo(audio.Duration, TimeSpan.FromSeconds(3));
