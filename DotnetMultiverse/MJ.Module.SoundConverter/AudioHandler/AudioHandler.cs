@@ -11,9 +11,10 @@ namespace MJ.Module.SoundConverter.AudioHandler;
 public class AudioHandler(Mp3IAudioCreator mp3IAudioCreator) : IAudioHandler
 {
     private const long MaxFileSize = 2L * 1024L * 1024L * 1024L; // 2GB
+
     public async Task<IAudio> ValidateAndCreateAudio(IBrowserFile browserFile)
     {
-        await using var audioStream = browserFile.OpenReadStream(maxAllowedSize: MaxFileSize);
+        await using var audioStream = browserFile.OpenReadStream(MaxFileSize);
         var newAudioStream = new MemoryStream(new byte[audioStream.Length]);
         await audioStream.CopyToAsync(newAudioStream);
         return browserFile.ContentType switch
@@ -23,7 +24,8 @@ public class AudioHandler(Mp3IAudioCreator mp3IAudioCreator) : IAudioHandler
         };
     }
 
-    public async Task<IAudio> ToOgg(IAudio audio, IProgress<double> progress, CancellationToken cancellationToken = default)
+    public async Task<IAudio> ToOgg(IAudio audio, IProgress<double> progress,
+        CancellationToken cancellationToken = default)
     {
         return audio switch
         {

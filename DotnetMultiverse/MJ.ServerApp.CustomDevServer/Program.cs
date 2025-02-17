@@ -10,13 +10,14 @@ using Serilog;
 
 var applicationPath = args.SkipWhile(a => a != "--applicationpath").Skip(1).First();
 var assemblyName = args.SkipWhile(a => a != "--assemblyname").Skip(1).First();
-var runtimeManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.runtime.json").SingleOrDefault();
+var runtimeManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.runtime.json")
+    .SingleOrDefault();
 var endpointsManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.endpoints.json").Single();
 var inMemoryConfiguration = new Dictionary<string, string?>
 {
     [WebHostDefaults.StaticWebAssetsKey] = runtimeManifest,
     ["staticAssets"] = endpointsManifest,
-    ["ApplyCopHeaders"] = args.Contains("--apply-cop-headers").ToString(),
+    ["ApplyCopHeaders"] = args.Contains("--apply-cop-headers").ToString()
 };
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 {
@@ -26,7 +27,8 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 
 builder.Configuration
     .AddInMemoryCollection(inMemoryConfiguration)
-    .AddJsonFile(Path.Combine(Path.GetDirectoryName( typeof(Program).Assembly.Location)!, "appsettings.json"), optional: false);
+    .AddJsonFile(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location)!, "appsettings.json"),
+        false);
 
 builder.Services
     .AddSerilog(options => options.ReadFrom.Configuration(builder.Configuration))
@@ -39,4 +41,3 @@ builder
     .Build()
     .AddMiddleware()
     .Run();
-

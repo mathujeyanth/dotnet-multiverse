@@ -27,9 +27,9 @@ public class TestConversionScheduler(ITestOutputHelper testOutputHelper)
             convertedAudioDict[convertedAudio.Guid] = convertedAudio;
             return Task.CompletedTask;
         }
-        
+
         conversionScheduler.OnProgressAsync += Update;
-        
+
         const int maxFiles = 5;
         const int maxAllowedFiles = 3;
         var guids = Enumerable.Range(0, maxFiles).Select(_ => Guid.NewGuid()).ToList();
@@ -43,10 +43,13 @@ public class TestConversionScheduler(ITestOutputHelper testOutputHelper)
                 var audioResult = Substitute.For<IAudio>();
                 audioResult.Extension.Returns(guid.ToString());
                 audioHandler
-                    .ValidateAndCreateAudio(Arg.Is<IBrowserFile>( x => allowedGuids.Contains(Guid.Parse(x.Name))))
+                    .ValidateAndCreateAudio(
+                        Arg.Is<IBrowserFile>(x => allowedGuids.Contains(Guid.Parse(x.Name))))
                     .Returns(Task.FromResult(audioResult));
                 audioHandler
-                    .ToOgg(Arg.Is<IAudio>(x => x.Extension == guid.ToString()), Arg.Any<Progress<double>>())
+                    .ToOgg(
+                        Arg.Is<IAudio>(x => x.Extension == guid.ToString()),
+                        Arg.Any<Progress<double>>())
                     .Returns(Task.FromResult(audioResult));
                 continue;
             }
@@ -56,17 +59,15 @@ public class TestConversionScheduler(ITestOutputHelper testOutputHelper)
                 await Task.Delay(TimeSpan.MaxValue);
                 throw new Exception("Should never get here.");
             }
-            
+
             audioHandler
-                .ValidateAndCreateAudio(Arg.Is<IBrowserFile>(x => !allowedGuids.Contains(Guid.Parse(x.Name))))
+                .ValidateAndCreateAudio(
+                    Arg.Is<IBrowserFile>(x => !allowedGuids.Contains(Guid.Parse(x.Name))))
                 .Returns(LargeDelay());
         }
-        
+
         // ACT
-        foreach (var file in files)
-        {
-            conversionScheduler.AddToQueue(file);
-        }
+        foreach (var file in files) conversionScheduler.AddToQueue(file);
 
         conversionScheduler.StartConverting();
         await Task.Delay(TimeSpan.FromSeconds(1));

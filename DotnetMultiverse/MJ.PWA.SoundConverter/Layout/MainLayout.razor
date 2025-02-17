@@ -3,11 +3,12 @@
 <MudPopoverProvider/>
 <MudDialogProvider/>
 <MudSnackbarProvider/>
-<MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode"  />
+<MudThemeProvider Theme="_theme" IsDarkMode="_isDarkMode"/>
 
 <MudLayout>
     <MudAppBar Elevation="0" Color="Color.Transparent" Dense="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DrawerToggle" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                       OnClick="@DrawerToggle"/>
         <MudButton Color="Color.Primary" Href="/">Dotnet Multiverse</MudButton>
         <MudSpacer/>
         <MudIconButton
@@ -15,7 +16,8 @@
             Edge="Edge.Start"
             Href="https://github.com/mathujeyanth/dotnet-multiverse"
             Target="_blank"/>
-        <MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" Edge="Edge.Start" OnClick="@DarkModeToggle" />
+        <MudIconButton Icon="@DarkLightModeButtonIcon" Color="Color.Inherit" Edge="Edge.Start"
+                       OnClick="@DarkModeToggle"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen"
                Elevation="0"
@@ -46,6 +48,7 @@
     private static PaletteLight _paletteLight = new();
     private static PaletteDark _paletteDark = new();
     private static LayoutProperties _layoutProperties = new();
+
     private MudTheme _theme = new()
     {
         PaletteLight = _paletteLight,
@@ -69,4 +72,5 @@
         false => Icons.Material.Rounded.DarkMode,
         true => Icons.Material.Outlined.LightMode
     };
+
 }

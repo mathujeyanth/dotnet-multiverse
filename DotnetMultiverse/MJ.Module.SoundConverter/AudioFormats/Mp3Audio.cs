@@ -9,6 +9,7 @@ public record Mp3Audio : IAudio
     public required TimeSpan Duration { get; init; }
     public required int SampleRate { get; init; }
     public string Extension => "mp3";
+
     public void Dispose()
     {
         AudioStream.Dispose();

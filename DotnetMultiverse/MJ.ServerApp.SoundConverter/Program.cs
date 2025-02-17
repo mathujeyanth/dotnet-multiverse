@@ -21,7 +21,7 @@ builder.Services
     .AddInteractiveWebAssemblyComponents();
 
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false);
+    .AddJsonFile("appsettings.json", false);
 
 builder.Services
     .AddRouting()
@@ -41,7 +41,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -49,14 +49,18 @@ else
 // app.UseHttpsRedirection();
 app.Use(async (ctx, next) =>
 {
-    if (ctx.Request.Path.StartsWithSegments("/_framework") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
+    if (ctx.Request.Path.StartsWithSegments("/_framework") &&
+        !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js") &&
+        !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
     {
         var fileExtension = Path.GetExtension(ctx.Request.Path);
-        if (string.Equals(fileExtension, ".js", StringComparison.OrdinalIgnoreCase) || string.Equals(fileExtension, ".mjs", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(fileExtension, ".js", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(fileExtension, ".mjs", StringComparison.OrdinalIgnoreCase))
         {
             // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
         }
     }
+
     ApplyCrossOriginPolicyHeaders(ctx);
 
     await next(ctx);
@@ -67,7 +71,7 @@ app.UseRouting()
     {
         // In development, serve everything, as there's no other way to configure it.
         // In production, developers are responsible for configuring their own production server
-        ServeUnknownFileTypes = true,
+        ServeUnknownFileTypes = true
     });
 
 app.MapFallbackToFile("index.html", new StaticFileOptions

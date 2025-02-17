@@ -9,14 +9,11 @@ using Serilog;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.Configuration
-    .AddJsonFile("appsettings.json", optional: false);
+    .AddJsonFile("appsettings.json", false);
 
 builder.Services
     .AddMudServices()
-    .AddSerilog(x =>
-    {
-        x.ReadFrom.Configuration(builder.Configuration);
-    })
+    .AddSerilog(x => { x.ReadFrom.Configuration(builder.Configuration); })
     .AddScoped<IAudioHandler, AudioHandler>()
     .AddScoped<Mp3IAudioCreator>()
     .AddScoped<IConversionScheduler, ConversionScheduler>();

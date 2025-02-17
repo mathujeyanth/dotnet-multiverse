@@ -20,7 +20,7 @@ internal static class Startup
             app.UseDeveloperExceptionPage();
             app.UseWebAssemblyDebugging();
         }
-        
+
         app.EnableConfiguredPathBase();
 
         var webHostEnvironment = app.Services.GetRequiredService<IWebHostEnvironment>();
@@ -33,14 +33,15 @@ internal static class Startup
             {
                 ctx.Response.Headers.Append("Blazor-Environment", webHostEnvironment.EnvironmentName);
             }
-            else if (applyCopHeaders && ctx.Request.Path.StartsWithSegments("/_framework") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js") && !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
+            else if (applyCopHeaders && ctx.Request.Path.StartsWithSegments("/_framework") &&
+                     !ctx.Request.Path.StartsWithSegments("/_framework/blazor.server.js") &&
+                     !ctx.Request.Path.StartsWithSegments("/_framework/blazor.web.js"))
             {
                 var fileExtension = Path.GetExtension(ctx.Request.Path);
-                if (string.Equals(fileExtension, ".js", StringComparison.OrdinalIgnoreCase) || string.Equals(fileExtension, ".mjs", StringComparison.OrdinalIgnoreCase))
-                {
+                if (string.Equals(fileExtension, ".js", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(fileExtension, ".mjs", StringComparison.OrdinalIgnoreCase))
                     // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
                     ctx.ApplyCrossOriginPolicyHeaders();
-                }
             }
 
             await next(ctx);
@@ -70,10 +71,8 @@ internal static class Startup
                 fileContext.Context.Response.Headers[HeaderNames.CacheControl] = "no-store";
 
                 if (applyCopHeaders)
-                {
                     // Browser multi-threaded runtime requires cross-origin policy headers to enable SharedArrayBuffer.
                     fileContext.Context.ApplyCrossOriginPolicyHeaders();
-                }
             }
         });
         return app;
@@ -82,10 +81,7 @@ internal static class Startup
     private static void EnableConfiguredPathBase(this WebApplication app)
     {
         var pathBase = app.Configuration.GetValue<string>("pathbase");
-        if (string.IsNullOrEmpty(pathBase))
-        {
-            return;
-        }
+        if (string.IsNullOrEmpty(pathBase)) return;
 
         app.UsePathBase(pathBase);
 
@@ -93,10 +89,7 @@ internal static class Startup
         // that match the specified pathbase.
         app.Use((context, next) =>
         {
-            if (context.Request.PathBase == pathBase)
-            {
-                return next(context);
-            }
+            if (context.Request.PathBase == pathBase) return next(context);
 
             context.Response.StatusCode = 404;
             return context.Response.WriteAsync($"The server is configured only to " +
