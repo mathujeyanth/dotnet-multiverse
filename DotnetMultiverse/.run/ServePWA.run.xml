@@ -1,23 +1,25 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="ServePWA" type="DotNetProject" factoryName=".NET Project">
-    <option name="EXE_PATH" value="$PROJECT_DIR$/MJ.ServerApp.CustomDevServer/bin/Debug/net9.0/MJ.ServerApp.CustomDevServer.dll" />
-    <option name="PROGRAM_PARAMETERS" value="--applicationpath $PROJECT_DIR$/MJ.PWA.SoundConverter/bin/Debug/net9.0/  --assemblyname MJ.PWA.SoundConverter --apply-cop-headers" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MJ.PWA.SoundConverter" />
-    <option name="PASS_PARENT_ENVS" value="1" />
-    <envs>
-      <env name="ASPNETCORE_URLS" value="http://0.0.0.0:5070" />
-    </envs>
-    <option name="USE_EXTERNAL_CONSOLE" value="0" />
-    <option name="USE_MONO" value="0" />
-    <option name="RUNTIME_ARGUMENTS" value="" />
-    <option name="PROJECT_PATH" value="$PROJECT_DIR$/MJ.PWA.SoundConverter/MJ.PWA.SoundConverter.csproj" />
-    <option name="PROJECT_EXE_PATH_TRACKING" value="0" />
-    <option name="PROJECT_ARGUMENTS_TRACKING" value="0" />
-    <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-    <option name="PROJECT_KIND" value="DotNetCore" />
-    <option name="PROJECT_TFM" value="net9.0" />
-    <method v="2">
-      <option name="Build" />
-    </method>
-  </configuration>
+    <configuration default="false" name="ServePWA" type="DotNetProject" factoryName=".NET Project">
+        <option name="EXE_PATH"
+                value="$PROJECT_DIR$/MJ.ServerApp.CustomDevServer/bin/Debug/net9.0/MJ.ServerApp.CustomDevServer.dll"/>
+        <option name="PROGRAM_PARAMETERS"
+                value="--applicationpath $PROJECT_DIR$/MJ.PWA.AudioConverter/bin/Debug/net9.0/  --assemblyname MJ.PWA.AudioConverter --apply-cop-headers"/>
+        <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/MJ.PWA.AudioConverter"/>
+        <option name="PASS_PARENT_ENVS" value="1"/>
+        <envs>
+            <env name="ASPNETCORE_URLS" value="http://0.0.0.0:5070"/>
+        </envs>
+        <option name="USE_EXTERNAL_CONSOLE" value="0"/>
+        <option name="USE_MONO" value="0"/>
+        <option name="RUNTIME_ARGUMENTS" value=""/>
+        <option name="PROJECT_PATH" value="$PROJECT_DIR$/MJ.PWA.AudioConverter/MJ.PWA.AudioConverter.csproj"/>
+        <option name="PROJECT_EXE_PATH_TRACKING" value="0"/>
+        <option name="PROJECT_ARGUMENTS_TRACKING" value="0"/>
+        <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1"/>
+        <option name="PROJECT_KIND" value="DotNetCore"/>
+        <option name="PROJECT_TFM" value="net9.0"/>
+        <method v="2">
+            <option name="Build"/>
+        </method>
+    </configuration>
 </component>

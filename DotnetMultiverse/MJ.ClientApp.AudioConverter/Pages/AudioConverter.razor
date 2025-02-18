@@ -1,0 +1,10 @@
+﻿@attribute [Route(PageUrl)]
+@using MJ.BlazorComponent.AudioConverter
+
+<PageTitle>Audio Converter</PageTitle>
+
+<AudioConverterComponent @rendermode="InteractiveAuto"/>
+
+@code {
+    public const string PageUrl = "audioConverter";
+}
