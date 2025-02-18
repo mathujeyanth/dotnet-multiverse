@@ -7,7 +7,9 @@ using Xunit.Abstractions;
 
 namespace MJ.Module.SoundConverter.Test;
 
+#pragma warning disable CS9113
 public class TestAudioHandler(ITestOutputHelper testOutputHelper)
+#pragma warning restore CS9113
 {
     [Fact]
     public async Task Should_ConvertToOgg_When_PassingValidMp3File()
