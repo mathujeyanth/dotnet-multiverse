@@ -1,0 +1,31 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: .NET CI/CD
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup dotnet
+        id: setup-dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.200'
+      - name: Set dotnet version
+        run: dotnet new globaljson && echo '${{ steps.setup-dotnet.outputs.dotnet-version }}'
+      - name: Install dependencies
+        working-directory: DotnetMultiverse
+        run: dotnet workload install wasm-tools && dotnet restore
+      - name: Build
+        working-directory: DotnetMultiverse
+        run: dotnet build --no-restore
+      - name: Test
+        working-directory: DotnetMultiverse
+        run: dotnet test --no-restore
