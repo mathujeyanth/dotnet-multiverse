@@ -3,12 +3,11 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MJ.BlazorComponent.AudioConverter\MJ.BlazorComponent.AudioConverter.csproj" />
+        <ProjectReference Include="..\MJ.BlazorComponent.AudioConverter\MJ.BlazorComponent.AudioConverter.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -1,19 +1,48 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
+using Serilog;
 
 namespace MJ.ServerApp.CustomDevServer.Startup;
 
-internal static class Startup
+public static class Startup
 {
-    public static WebApplication AddMiddleware(this WebApplication app)
+    public static WebApplicationBuilder AddApp(this WebApplicationBuilder webApplicationBuilder,
+        string applicationPath, string assemblyName)
+    {
+        var runtimeManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.runtime.json")
+            .SingleOrDefault();
+        var endpointsManifest = Directory.GetFiles(applicationPath, $"{assemblyName}.staticwebassets.endpoints.json")
+            .Single();
+        var inMemoryConfiguration = new Dictionary<string, string?>
+        {
+            [WebHostDefaults.StaticWebAssetsKey] = runtimeManifest,
+            ["staticAssets"] = endpointsManifest
+        };
+
+        webApplicationBuilder.Configuration
+            .AddInMemoryCollection(inMemoryConfiguration)
+            .AddJsonFile(Path.Combine(Path.GetDirectoryName(typeof(Program).Assembly.Location)!, "appsettings.json"),
+                false);
+
+        webApplicationBuilder.Services
+            .AddSerilog(options => options.ReadFrom.Configuration(webApplicationBuilder.Configuration))
+            .AddRouting();
+
+        // Needed to serve when non-published wwwroot.
+        webApplicationBuilder.WebHost.UseStaticWebAssets();
+        return webApplicationBuilder;
+    }
+
+    public static WebApplication UseApp(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {
@@ -24,9 +53,7 @@ internal static class Startup
         app.EnableConfiguredPathBase();
 
         var webHostEnvironment = app.Services.GetRequiredService<IWebHostEnvironment>();
-        var applyCopHeaders = app.Configuration.GetValue<bool>("ApplyCopHeaders");
-        app.Logger.LogDebug($"ApplyCopHeaders: {applyCopHeaders}");
-        applyCopHeaders = true;
+        var applyCopHeaders = true;
         app.Use(async (ctx, next) =>
         {
             if (ctx.Request.Path.StartsWithSegments("/_framework/blazor.boot.json"))
