@@ -25,7 +25,13 @@ jobs:
         run: dotnet workload install wasm-tools && dotnet restore
       - name: Build
         working-directory: DotnetMultiverse
-        run: dotnet build --no-restore
+        run: dotnet build -c Release --no-restore    
+      - name: Ensure browsers are installed
+        working-directory: DotnetMultiverse/MJ.PWA.AudioConverter.Test
+        run: pwsh bin/Release/net9.0/playwright.ps1 install --with-deps
+      - name: Publish PWA
+        working-directory: DotnetMultiverse/MJ.PWA.AudioConverter
+        run: dotnet publish -c Release --no-restore
       - name: Test
         working-directory: DotnetMultiverse
         run: dotnet test --no-restore
