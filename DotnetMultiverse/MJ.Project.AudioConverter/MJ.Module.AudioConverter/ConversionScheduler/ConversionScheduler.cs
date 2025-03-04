@@ -55,7 +55,7 @@ public class ConversionScheduler(IAudioHandler audioHandler, ILogger<ConversionS
                 UpdateProgress(result.guid, 1, true, audio);
                 logger.LogInformation($"Converted {result.file.Name}");
             }
-            catch (Exception e) when (e is ApplicationException or OperationCanceledException)
+            catch (Exception e) // Bad practice.
             {
                 logger.LogError(e, $"Failed converting {result.file.Name}");
                 return;

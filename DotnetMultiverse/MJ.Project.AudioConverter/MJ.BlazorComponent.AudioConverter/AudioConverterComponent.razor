@@ -14,8 +14,8 @@
 @inject IConversionScheduler ConversionScheduler
 
 
-<MudGrid>
-    <MudItem xs="12" sm="7">
+<MudGrid Justify="Justify.Center">
+    <MudItem Class="flex-grow-1">
         <MudPaper Class="pa-4">
             <MudForm Model="@_model"
                      @bind-IsValid="_isValid"
@@ -59,12 +59,13 @@
                             </MudPaper>
                         </ActivatorContent>
                     </MudFileUpload>
-                    <MudStack Spacing="2" Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start"
-                              StretchItems="StretchItems.None">
+                    <MudStack Spacing="2" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start"
+                              StretchItems="StretchItems.None" Class="flex-grow-1" Row="true" Wrap="Wrap.Wrap">
                         <MudButton Color="Color.Primary"
                                    StartIcon="@Icons.Material.Filled.AttachFile"
                                    OnClick="@OpenFilePickerAsync"
-                                   Variant="Variant.Filled">
+                                   Variant="Variant.Filled"
+                                   >
                             Select file
                         </MudButton>
                         <MudButton Color="Color.Error"
@@ -87,13 +88,13 @@
             </MudForm>
         </MudPaper>
     </MudItem>
-    <MudItem xs="12" sm="5">
-        <MudPaper Class="pa-4 mud-height-full">
+    <MudItem Class="flex-grow-1">
+        <MudPaper Class="pa-4">
             @if (_guidToProgress.Count == 0)
             {
                 <MudTable
                     Items="Enumerable.Range(0, 5)"
-                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None">
+                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown">
                     <HeaderContent>
                         <MudTh>File Name</MudTh>
                         <MudTh>Progress</MudTh>
@@ -101,10 +102,10 @@
                     </HeaderContent>
                     <RowTemplate>
                         <MudTd DataLabel="File Name">
-                            <MudSkeleton/>
+                            <MudSkeleton Animation="Animation.False"/>
                         </MudTd>
                         <MudTd DataLabel="Progress">
-                            <MudSkeleton/>
+                            <MudSkeleton Animation="Animation.False"/>
                         </MudTd>
                         <MudTd DataLabel="Download">
                         </MudTd>
@@ -116,7 +117,7 @@
                 <MudTable
                     Items="_guidToProgress.ToList()"
                     Loading="@(_guidToProgress.Values.Any(x => !x.convertedAudio.IsFinished))"
-                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.None" RowsPerPage="5">
+                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown" RowsPerPage="5">
                     <HeaderContent>
                         <MudTh>File Name</MudTh>
                         <MudTh>Progress</MudTh>
