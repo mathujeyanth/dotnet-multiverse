@@ -6,11 +6,17 @@ name: .NET CI/CD
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
+env:
+  PROJECT_FOLDER: DotnetMultiverse/MJ.Project.AudioConverter
+  
 jobs:
   build-and-test:
-    permissions: write-all
-    name: Build and test
+    env:
+      DOTNET_VERSION: '9.0.200'
+      
+    name: Build and Test
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -18,29 +24,62 @@ jobs:
         id: setup-dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.200'
+          dotnet-version: ${{env.DOTNET_VERSION}}
       - name: Set dotnet version
-        run: dotnet new globaljson && echo '${{ steps.setup-dotnet.outputs.dotnet-version }}'
+        run: dotnet new globaljson && echo '${{ env.DOTNET_VERSION }}'
+        
       - name: Install dependencies
         run: dotnet workload install wasm-tools && dotnet restore
+        
       - name: Build
-        run: dotnet build -c Release --no-restore    
-      - name: Ensure browsers are installed
-        working-directory: DotnetMultiverse/MJ.Project.AudioConverter/MJ.PWA.AudioConverter.Test
-        run: pwsh bin/Release/net9.0/playwright.ps1 install --with-deps
-      - name: Publish PWA
-        working-directory: DotnetMultiverse/MJ.Project.AudioConverter/MJ.PWA.AudioConverter
-        run: dotnet publish -c Release --no-restore
-      - name: Test
-        run: dotnet test --no-restore
+        run: dotnet build -c Release --no-restore
+        
+      - name: Test modules
+        run: dotnet test --filter 'FullyQualifiedName!~PWA' --no-restore
+
+      - name: Test PWA
+        if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
+        run: |
+          echo "Ensure browsers are installed"
+          pwsh ${{env.PROJECT_FOLDER}}/MJ.PWA.AudioConverter.Test/bin/Release/net9.0/playwright.ps1 install --with-deps
+          echo "Publish PWA"
+          dotnet publish -c Release ${{env.PROJECT_FOLDER}}/MJ.PWA.AudioConverter
+          echo "Test PWA"
+          dotnet test --filter 'FullyQualifiedName!~PWA' --no-restore
+
+  deploy:
+    needs: build-and-test
+    if: ${{ success() && ((github.event_name == 'pull_request' && github.base_ref == 'main') || github.event_name == 'push' && github.ref == 'refs/heads/main') }} 
+    env:
+      DOCKER_IMAGE_NAME: mj-pwa-audio-converter
+      DOCKER_DEV_IMAGE_NAME: dev.mj-pwa-audio-converter
+      DOCKER_REPO: mathujeyanth
+
+    permissions: write-all
+    name: Deploy
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
       - name: Login to ghcr
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and upload artefacts 
-        run: | 
-                cd DotnetMultiverse/MJ.Project.AudioConverter
-                docker build -t ghcr.io/mathujeyanth/mj-pwa-audio-converter -f Dockerfile ..
-                docker push ghcr.io/mathujeyanth/mj-pwa-audio-converter
+          
+      - name: Set image name
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main'}}
+        run: echo "IMAGE_NAME=${{env.DOCKER_IMAGE_NAME}}" >> $GITHUB_ENV
+      - name: Set branch image name
+        if: ${{ !(github.event_name == 'push' && github.ref == 'refs/heads/main')}}
+        run: echo "IMAGE_NAME=${{env.DOCKER_DEV_IMAGE_NAME}}" >> $GITHUB_ENV
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+          
+      - name: Build and upload artefacts
+        if: ${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'pull_request' && github.base_ref == 'main' }}
+        run: |
+          echo ${{env.IMAGE_NAME}}
+          cd ${{env.PROJECT_FOLDER}}
+          docker buildx build --cache-from=type=registry,ref=ghcr.io/${{env.DOCKER_REPO}}/cache --cache-to=type=registry,ref=ghcr.io/${{env.DOCKER_REPO}}/cache,mode=max --tag ghcr.io/${{env.DOCKER_REPO}}/${{env.IMAGE_NAME}} -f Dockerfile --push ..
