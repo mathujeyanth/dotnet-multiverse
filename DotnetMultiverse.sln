@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.BlazorComponent.AudioConverter", "MJ.BlazorComponent.AudioConverter", "{C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.Module.AudioConverter", "MJ.Module.AudioConverter", "{EE297094-210D-4826-87CC-B7F8D5175549}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.App.AudioConverter", "MJ.App.AudioConverter", "{D27B4463-DC77-46E5-B662-273B6454AC98}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.PWA.AudioConverter", "MJ.PWA.AudioConverter", "{939EEAE6-8306-40BB-9BF5-142692783577}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.App.DevServer", "MJ.App.DevServer", "{9D9BD0B9-3F81-48FD-9AD3-B65859BF7C12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.ClientApp.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.ClientApp.AudioConverter\MJ.ClientApp.AudioConverter.csproj", "{107FD454-C991-4F25-9A7D-3DD6D50DE33B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.Module.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.Module.AudioConverter\MJ.Module.AudioConverter.csproj", "{BDED1C6C-0483-469C-96F4-56A92AEDD3D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.Module.AudioConverter.Test", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.Module.AudioConverter.Test\MJ.Module.AudioConverter.Test.csproj", "{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.BlazorComponent.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.BlazorComponent.AudioConverter\MJ.BlazorComponent.AudioConverter.csproj", "{A2CBA964-854F-474A-A660-82ACC872A27C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.BlazorComponent.AudioConverter.Test", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.BlazorComponent.AudioConverter.Test\MJ.BlazorComponent.AudioConverter.Test.csproj", "{063A3A8A-D8E2-4B2B-90B5-B39C095602AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.ServerApp.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.ServerApp.AudioConverter\MJ.ServerApp.AudioConverter.csproj", "{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.ServerApp.CustomDevServer", "DotnetMultiverse\MJ.ServerApp.CustomDevServer\MJ.ServerApp.CustomDevServer.csproj", "{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.Project.AudioConverter", "MJ.Project.AudioConverter", "{726E4488-5930-4E7D-B025-3BF762E00626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.PWA.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.PWA.AudioConverter\MJ.PWA.AudioConverter.csproj", "{3FE21918-28FA-467D-8593-80425D942D39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.PWA.AudioConverter.Test", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.PWA.AudioConverter.Test\MJ.PWA.AudioConverter.Test.csproj", "{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{107FD454-C991-4F25-9A7D-3DD6D50DE33B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{107FD454-C991-4F25-9A7D-3DD6D50DE33B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{107FD454-C991-4F25-9A7D-3DD6D50DE33B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{107FD454-C991-4F25-9A7D-3DD6D50DE33B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDED1C6C-0483-469C-96F4-56A92AEDD3D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDED1C6C-0483-469C-96F4-56A92AEDD3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDED1C6C-0483-469C-96F4-56A92AEDD3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDED1C6C-0483-469C-96F4-56A92AEDD3D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2CBA964-854F-474A-A660-82ACC872A27C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2CBA964-854F-474A-A660-82ACC872A27C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2CBA964-854F-474A-A660-82ACC872A27C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2CBA964-854F-474A-A660-82ACC872A27C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{063A3A8A-D8E2-4B2B-90B5-B39C095602AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{063A3A8A-D8E2-4B2B-90B5-B39C095602AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{063A3A8A-D8E2-4B2B-90B5-B39C095602AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{063A3A8A-D8E2-4B2B-90B5-B39C095602AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FE21918-28FA-467D-8593-80425D942D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FE21918-28FA-467D-8593-80425D942D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FE21918-28FA-467D-8593-80425D942D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FE21918-28FA-467D-8593-80425D942D39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{107FD454-C991-4F25-9A7D-3DD6D50DE33B} = {D27B4463-DC77-46E5-B662-273B6454AC98}
+		{BDED1C6C-0483-469C-96F4-56A92AEDD3D4} = {EE297094-210D-4826-87CC-B7F8D5175549}
+		{5DE826A8-77B3-4DFD-A21D-5548AA1E76B4} = {EE297094-210D-4826-87CC-B7F8D5175549}
+		{A2CBA964-854F-474A-A660-82ACC872A27C} = {C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B}
+		{063A3A8A-D8E2-4B2B-90B5-B39C095602AB} = {C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B}
+		{FCB56533-8CB9-4BEA-B00E-09C2090CA9EC} = {D27B4463-DC77-46E5-B662-273B6454AC98}
+		{6C45796D-3CCD-40D9-9280-E0B75D0F02AB} = {9D9BD0B9-3F81-48FD-9AD3-B65859BF7C12}
+		{D27B4463-DC77-46E5-B662-273B6454AC98} = {726E4488-5930-4E7D-B025-3BF762E00626}
+		{C67EEBC0-7765-4F69-B76A-18DB0CDEBB4B} = {726E4488-5930-4E7D-B025-3BF762E00626}
+		{EE297094-210D-4826-87CC-B7F8D5175549} = {726E4488-5930-4E7D-B025-3BF762E00626}
+		{939EEAE6-8306-40BB-9BF5-142692783577} = {726E4488-5930-4E7D-B025-3BF762E00626}
+		{3FE21918-28FA-467D-8593-80425D942D39} = {939EEAE6-8306-40BB-9BF5-142692783577}
+		{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E} = {939EEAE6-8306-40BB-9BF5-142692783577}
+	EndGlobalSection
+EndGlobal

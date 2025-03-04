@@ -15,7 +15,7 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="../MJ.ServerApp.CustomDevServer/MJ.ServerApp.CustomDevServer.csproj"/>
+        <ProjectReference Include="../../MJ.ServerApp.CustomDevServer/MJ.ServerApp.CustomDevServer.csproj"/>
         <ProjectReference Include="../MJ.PWA.AudioConverter/MJ.PWA.AudioConverter.csproj"/>
     </ItemGroup>
 </Project>
