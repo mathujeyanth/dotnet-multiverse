@@ -9,6 +9,7 @@ on:
 
 jobs:
   build-and-test:
+    permissions: write-all
     name: Build and test
     runs-on: ubuntu-22.04
     steps:
@@ -21,17 +22,25 @@ jobs:
       - name: Set dotnet version
         run: dotnet new globaljson && echo '${{ steps.setup-dotnet.outputs.dotnet-version }}'
       - name: Install dependencies
-        working-directory: DotnetMultiverse
         run: dotnet workload install wasm-tools && dotnet restore
       - name: Build
-        working-directory: DotnetMultiverse
         run: dotnet build -c Release --no-restore    
       - name: Ensure browsers are installed
-        working-directory: DotnetMultiverse/MJ.PWA.AudioConverter.Test
+        working-directory: DotnetMultiverse/MJ.Project.AudioConverter/MJ.PWA.AudioConverter.Test
         run: pwsh bin/Release/net9.0/playwright.ps1 install --with-deps
       - name: Publish PWA
-        working-directory: DotnetMultiverse/MJ.PWA.AudioConverter
+        working-directory: DotnetMultiverse/MJ.Project.AudioConverter/MJ.PWA.AudioConverter
         run: dotnet publish -c Release --no-restore
       - name: Test
-        working-directory: DotnetMultiverse
         run: dotnet test --no-restore
+      - name: Login to ghcr
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and upload artefacts 
+        run: | 
+                cd DotnetMultiverse/MJ.Project.AudioConverter
+                docker build -t ghcr.io/mathujeyanth/mj-pwa-audio-converter -f Dockerfile ..
+                docker push ghcr.io/mathujeyanth/mj-pwa-audio-converter

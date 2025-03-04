@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+*.user
+*.suo
+*.bak
+*.pdb
+*.log
+.env
+node_modules/
+secrets/
+Dockerfile
+.dockerignore
+**/MJ.*.Test/
+MJ.*.Test/
