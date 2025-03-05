@@ -16,7 +16,9 @@ internal static class Mp3ToOggConverter
     // but to increase it we have to do proper handling of the pcm array or outSamples
     // to only read the required amount of the audio and not larger than the WriteBufferSize
     // resulting in additional seconds of silence to the audio. 
-    private const int WriteBufferSize = 1024; 
+    // E.g. 1024 we get the correct audio length but the whole application is slow and almost unusable,
+    // but with 1024*1024 it has 5 additional seconds.
+    private const int WriteBufferSize = 1024 * 1024; 
 
     public static async Task<OggAudio> Mp3ToOgg(this Mp3Audio mp3Audio,
         IProgress<double> progress, CancellationToken cancellationToken = default)
