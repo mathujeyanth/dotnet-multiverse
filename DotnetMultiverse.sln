@@ -25,10 +25,19 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.ServerApp.CustomDevServer", "DotnetMultiverse\MJ.ServerApp.CustomDevServer\MJ.ServerApp.CustomDevServer.csproj", "{6C45796D-3CCD-40D9-9280-E0B75D0F02AB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MJ.Project.AudioConverter", "MJ.Project.AudioConverter", "{726E4488-5930-4E7D-B025-3BF762E00626}"
+	ProjectSection(SolutionItems) = preProject
+		DotnetMultiverse\MJ.Project.AudioConverter\Dockerfile = DotnetMultiverse\MJ.Project.AudioConverter\Dockerfile
+		DotnetMultiverse\MJ.Project.AudioConverter\.dockerignore = DotnetMultiverse\MJ.Project.AudioConverter\.dockerignore
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.PWA.AudioConverter", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.PWA.AudioConverter\MJ.PWA.AudioConverter.csproj", "{3FE21918-28FA-467D-8593-80425D942D39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MJ.PWA.AudioConverter.Test", "DotnetMultiverse\MJ.Project.AudioConverter\MJ.PWA.AudioConverter.Test\MJ.PWA.AudioConverter.Test.csproj", "{EC9A78A1-6F0D-476C-86E0-8E3BDBFB1E3E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Others", "Others", "{CB529679-F4A9-4AEF-B40B-83FC3087A151}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\pipeline.yml = .github\workflows\pipeline.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
