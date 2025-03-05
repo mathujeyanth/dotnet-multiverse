@@ -12,7 +12,11 @@ namespace MJ.Module.AudioConverter.IAudioCreators;
 
 internal static class Mp3ToOggConverter
 {
-    private const int WriteBufferSize = 1024 * 1024;
+    // The bigger the buffer size the faster the conversion,
+    // but to increase it we have to do proper handling of the pcm array or outSamples
+    // to only read the required amount of the audio and not larger than the WriteBufferSize
+    // resulting in additional seconds of silence to the audio. 
+    private const int WriteBufferSize = 1024; 
 
     public static async Task<OggAudio> Mp3ToOgg(this Mp3Audio mp3Audio,
         IProgress<double> progress, CancellationToken cancellationToken = default)
@@ -25,17 +29,14 @@ internal static class Mp3ToOggConverter
         var pcmSampleRate = mp3FileReaderBase.WaveFormat.SampleRate;
         var outputChannels = pcmChannels;
         var outputSampleRate = pcmSampleRate;
-
-        // if (pcmChannels != outputChannels || pcmSampleRate != outputSampleRate) throw new Exception();
-
+        
         InitOggStream(outputSampleRate, outputChannels, out var oggStream, out var processingState);
 
-        var pcmSampleSize = mp3FileReaderBase.WaveFormat.BitsPerSample / 8; // == 4
+        const int speedMultiplier = 8; //  4 = double as fast, 8 = normal
+        var pcmSampleSize = mp3FileReaderBase.WaveFormat.BitsPerSample / speedMultiplier; // == 4, which is what I assume BitConverter.ToSingle needs, since it read four bytes. 
 
         var status = 0;
-
-        var pcm = new byte[WriteBufferSize];
-
+        
         var outSamples = new float[outputChannels][];
         var numOutputSamples = WriteBufferSize / pcmSampleSize / pcmChannels;
         for (var ch = 0; ch < outputChannels; ch++) outSamples[ch] = new float[numOutputSamples];
@@ -43,7 +44,8 @@ internal static class Mp3ToOggConverter
         while (true)
         {
             if (cancellationToken.IsCancellationRequested) cancellationToken.ThrowIfCancellationRequested();
-
+            
+            var pcm = new byte[WriteBufferSize];
             var chunkSize = mp3FileReaderBase.Read(pcm, 0, WriteBufferSize);
 
             status += chunkSize;
@@ -54,9 +56,10 @@ internal static class Mp3ToOggConverter
             for (var sampleNumber = 0; sampleNumber < numOutputSamples; sampleNumber++)
             {
                 var sampleIndex = sampleNumber * pcmChannels * pcmSampleSize;
-
-                outSamples[0][sampleNumber] = BitConverter.ToSingle(pcm, sampleIndex);
-                outSamples[1][sampleNumber] = BitConverter.ToSingle(pcm, sampleIndex + pcmSampleSize);
+                for (var ch = 0; ch < outputChannels; ch++)
+                {
+                    outSamples[ch][sampleNumber] = BitConverter.ToSingle(pcm, sampleIndex + ch*pcmSampleSize);
+                }
             }
 
             await FlushPages(oggStream, outputStream, false, cancellationToken);
