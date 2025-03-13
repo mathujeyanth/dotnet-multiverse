@@ -13,144 +13,147 @@
 @inject IJSRuntime JsRuntime
 @inject IConversionScheduler ConversionScheduler
 
-
-<MudGrid Justify="Justify.Center">
-    <MudItem Class="flex-grow-1">
-        <MudPaper Class="pa-4">
-            <MudForm Model="@_model"
-                     @bind-IsValid="_isValid"
-                     @bind-IsTouched="_isTouched"
-                     Validation="@_validationRules.ValidateValue">
-                <MudStack Spacing="3">
-                    @* BUG: Multiple file upload fails often with server side rendering, 
+<MudStack Spacing="4">
+    <MudText Align="Align.Center" Typo="Typo.h2">Audio Converter</MudText>
+    <MudText Align="Align.Center">Audio converter created in native .NET/C# to convert mp3 audio to open source ogg</MudText>
+    <MudGrid Justify="Justify.Center">
+        <MudItem Class="flex-grow-1">
+            <MudPaper Class="pa-4">
+                <MudForm Model="@_model"
+                         @bind-IsValid="_isValid"
+                         @bind-IsTouched="_isTouched"
+                         Validation="@_validationRules.ValidateValue">
+                    <MudStack Spacing="3">
+                        @* BUG: Multiple file upload fails often with server side rendering, 
                     where the IBrowserFile stream throws "Did not receive any data in the allotted time."
                     Error occurs in ConversionScheduler class.
                     Most likely due to:
                     https://github.com/dotnet/aspnetcore/issues/38842
                     https://github.com/dotnet/aspnetcore/issues/47301*@
-                    <MudFileUpload T="IReadOnlyList<IBrowserFile>"
-                                   @ref="@_fileUpload"
-                                   @bind-Files="_model.Files"
-                                   For="@(() => _model.Files!)"
-                                   Accept=".mp3"
-                                   AppendMultipleFiles="true"
-                                   Hidden="@false"
-                                   InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
-                                   InputStyle="opacity:0"
-                                   ErrorText="@string.Empty"
-                                   MaximumFileCount="20"
-                                   tabindex="-1"
-                                   @ondrop="ClearDragClass"
-                                   @ondragenter="SetDragClass"
-                                   @ondragleave="ClearDragClass"
-                                   @ondragend="ClearDragClass"
-                                   Style="width: 100%;">
-                        <ActivatorContent>
-                            <MudPaper Height="300px"
-                                      Outlined="true"
-                                      Class="@_dragClass">
-                                <MudText Typo="Typo.h6" Align="Align.Center">
-                                    Drag and drop files here or click
-                                </MudText>
-                                @foreach (var file in _model.Files?.Select(file => file.Name) ?? [])
-                                {
-                                    <MudChip T="string" Color="Color.Dark" Text="@file"/>
-                                }
-                            </MudPaper>
-                        </ActivatorContent>
-                    </MudFileUpload>
-                    <MudStack Spacing="2" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start"
-                              StretchItems="StretchItems.None" Class="flex-grow-1" Row="true" Wrap="Wrap.Wrap">
-                        <MudButton Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.AttachFile"
-                                   OnClick="@OpenFilePickerAsync"
-                                   Variant="Variant.Filled"
-                                   >
-                            Select file
-                        </MudButton>
-                        <MudButton Color="Color.Error"
-                                   StartIcon="@Icons.Material.Filled.Delete"
-                                   Disabled="@(_model.Files is null || !_model.Files.Any())"
-                                   OnClick="@ClearAsync"
-                                   Variant="Variant.Filled">
-                            Clear
-                        </MudButton>
-                        <MudSpacer/>
-                        <MudButton Color="Color.Primary"
-                                   StartIcon="@Icons.Material.Filled.DoubleArrow"
-                                   Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any())"
-                                   OnClick="@Convert"
-                                   Variant="Variant.Filled">
-                            Convert
-                        </MudButton>
+                        <MudFileUpload T="IReadOnlyList<IBrowserFile>"
+                                       @ref="@_fileUpload"
+                                       @bind-Files="_model.Files"
+                                       For="@(() => _model.Files!)"
+                                       Accept=".mp3"
+                                       AppendMultipleFiles="true"
+                                       Hidden="@false"
+                                       InputClass="absolute mud-width-full mud-height-full overflow-hidden z-10"
+                                       InputStyle="opacity:0"
+                                       ErrorText="@string.Empty"
+                                       MaximumFileCount="20"
+                                       tabindex="-1"
+                                       @ondrop="ClearDragClass"
+                                       @ondragenter="SetDragClass"
+                                       @ondragleave="ClearDragClass"
+                                       @ondragend="ClearDragClass"
+                                       Style="width: 100%;">
+                            <ActivatorContent>
+                                <MudPaper Height="300px"
+                                          Outlined="true"
+                                          Class="@_dragClass">
+                                    <MudText Typo="Typo.h6" Align="Align.Center">
+                                        Drag and drop files here or click
+                                    </MudText>
+                                    @foreach (var file in _model.Files?.Select(file => file.Name) ?? [])
+                                    {
+                                        <MudChip T="string" Color="Color.Dark" Text="@file"/>
+                                    }
+                                </MudPaper>
+                            </ActivatorContent>
+                        </MudFileUpload>
+                        <MudStack Spacing="2" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start"
+                                  StretchItems="StretchItems.None" Class="flex-grow-1" Row="true" Wrap="Wrap.Wrap">
+                            <MudButton Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.AttachFile"
+                                       OnClick="@OpenFilePickerAsync"
+                                       Variant="Variant.Filled"
+                            >
+                                Select file
+                            </MudButton>
+                            <MudButton Color="Color.Error"
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       Disabled="@(_model.Files is null || !_model.Files.Any())"
+                                       OnClick="@ClearAsync"
+                                       Variant="Variant.Filled">
+                                Clear
+                            </MudButton>
+                            <MudSpacer/>
+                            <MudButton Color="Color.Primary"
+                                       StartIcon="@Icons.Material.Filled.DoubleArrow"
+                                       Disabled="@(!_isValid || !_isTouched || _model.Files is null || !_model.Files.Any())"
+                                       OnClick="@Convert"
+                                       Variant="Variant.Filled">
+                                Convert
+                            </MudButton>
+                        </MudStack>
                     </MudStack>
-                </MudStack>
-            </MudForm>
-        </MudPaper>
-    </MudItem>
-    <MudItem Class="flex-grow-1">
-        <MudPaper Class="pa-4">
-            @if (_guidToProgress.Count == 0)
-            {
-                <MudTable
-                    Items="Enumerable.Range(0, 5)"
-                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown">
-                    <HeaderContent>
-                        <MudTh>File Name</MudTh>
-                        <MudTh>Progress</MudTh>
-                        <MudTh></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="File Name">
-                            <MudSkeleton Animation="Animation.False"/>
-                        </MudTd>
-                        <MudTd DataLabel="Progress">
-                            <MudSkeleton Animation="Animation.False"/>
-                        </MudTd>
-                        <MudTd DataLabel="Download">
-                        </MudTd>
-                    </RowTemplate>
-                </MudTable>
-            }
-            else
-            {
-                <MudTable
-                    Items="_guidToProgress.ToList()"
-                    Loading="@(_guidToProgress.Values.Any(x => !x.convertedAudio.IsFinished))"
-                    Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown" RowsPerPage="5">
-                    <HeaderContent>
-                        <MudTh>File Name</MudTh>
-                        <MudTh>Progress</MudTh>
-                        <MudTh></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="File Name">
-                            @context.Value.fileName
-                        </MudTd>
-                        <MudTd DataLabel="Progress">
-                            <MudProgressLinear Color="Color.Primary"
-                                               Striped="@(!context.Value.convertedAudio.IsFinished)"
-                                               Value="@context.Value.convertedAudio.Progress" Min="0" Max="1"
-                                               Size="Size.Large">
-                                <MudText>
-                                    @((int)(context.Value.convertedAudio.Progress * 100))%
-                                </MudText>
-                            </MudProgressLinear>
-                        </MudTd>
-                        <MudTd DataLabel="Download">
-                            <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary"
-                                           Disabled="@(!context.Value.convertedAudio.IsFinished)"
-                                           OnClick="@(() => DownloadFileFromStream(context.Key))"/>
-                        </MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        <MudTablePager HorizontalAlignment="HorizontalAlignment.Start" HideRowsPerPage="true"/>
-                    </PagerContent>
-                </MudTable>
-            }
-        </MudPaper>
-    </MudItem>
-</MudGrid>
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+        <MudItem Class="flex-grow-1">
+            <MudPaper Class="pa-4">
+                @if (_guidToProgress.Count == 0)
+                {
+                    <MudTable
+                        Items="Enumerable.Range(0, 5)"
+                        Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown">
+                        <HeaderContent>
+                            <MudTh>File Name</MudTh>
+                            <MudTh>Progress</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="File Name">
+                                <MudSkeleton Animation="Animation.False"/>
+                            </MudTd>
+                            <MudTd DataLabel="Progress">
+                                <MudSkeleton Animation="Animation.False"/>
+                            </MudTd>
+                            <MudTd DataLabel="Download">
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+                else
+                {
+                    <MudTable
+                        Items="_guidToProgress.ToList()"
+                        Loading="@(_guidToProgress.Values.Any(x => !x.convertedAudio.IsFinished))"
+                        Hover="true" Dense="true" Outlined="true" Breakpoint="Breakpoint.SmAndDown" RowsPerPage="5">
+                        <HeaderContent>
+                            <MudTh>File Name</MudTh>
+                            <MudTh>Progress</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="File Name">
+                                @context.Value.fileName
+                            </MudTd>
+                            <MudTd DataLabel="Progress">
+                                <MudProgressLinear Color="Color.Primary"
+                                                   Striped="@(!context.Value.convertedAudio.IsFinished)"
+                                                   Value="@context.Value.convertedAudio.Progress" Min="0" Max="1"
+                                                   Size="Size.Large">
+                                    <MudText>
+                                        @((int)(context.Value.convertedAudio.Progress * 100))%
+                                    </MudText>
+                                </MudProgressLinear>
+                            </MudTd>
+                            <MudTd DataLabel="Download">
+                                <MudIconButton Icon="@Icons.Material.Filled.ArrowDownward" Color="Color.Primary"
+                                               Disabled="@(!context.Value.convertedAudio.IsFinished)"
+                                               OnClick="@(() => DownloadFileFromStream(context.Key))"/>
+                            </MudTd>
+                        </RowTemplate>
+                        <PagerContent>
+                            <MudTablePager HorizontalAlignment="HorizontalAlignment.Start" HideRowsPerPage="true"/>
+                        </PagerContent>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudStack>
 
 <script>
     window.jsDownloadFileFromStream = async (fileName, contentStreamReference) => {
