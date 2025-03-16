@@ -1,0 +1,23 @@
+﻿@using MudBlazor
+
+<MudGrid Justify="Justify.Center">
+    <MudStack>
+        <MudText Typo="Typo.h2">Hi there!</MudText>
+        <MudText Typo="Typo.h5">Welcome to Jeyanth's Dotnet Multiverse App!</MudText>
+        <MudText>An app where I test different parts of dotnet and blazor.</MudText>
+        <MudSpacer/>
+        <MudButton EndIcon="@Icons.Material.Filled.MusicNote" IconSize="Size.Large" IconColor="Color.Default"
+                   Href="@AudioConvertLink" Color="Color.Primary"
+                   Variant="Variant.Filled" Style="padding: 3em; margin: 1em;">
+            <MudText>
+                Try my mp3 to ogg audio converter written entirely in native .NET/C# and is the first of it's kind
+                to my knowledge.
+            </MudText>
+        </MudButton>
+    </MudStack>
+</MudGrid>
+
+@code {
+    [Parameter]
+    public required string AudioConvertLink { get; set; }
+}

@@ -1,9 +1,6 @@
 ﻿@page "/"
+@using MJ.BlazorComponent.Home
 
 <PageTitle>Home</PageTitle>
-<MudGrid Justify="Justify.Center">
-    <MudStack>
-        <MudText Typo="Typo.h1">Hello, world!</MudText>
-        <MudText>Welcome to my, Jeyanth's, app where I test different parts of dotnet and blazor.</MudText>
-    </MudStack>
-</MudGrid>
+
+<HomeComponent AudioConvertLink="@AudioConverter.PageUrl" @rendermode="InteractiveAuto"/>

@@ -1,0 +1,10 @@
+﻿@attribute [Route(PageUrl)]
+@using MJ.BlazorComponent.Home
+
+<PageTitle>Home</PageTitle>
+
+<HomeComponent AudioConvertLink="@AudioConverter.PageUrl" @rendermode="InteractiveWebAssembly"/>
+
+@code {
+    public const string PageUrl = "";
+}
