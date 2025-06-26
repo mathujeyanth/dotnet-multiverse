@@ -4,9 +4,17 @@
     <MudStack>
         <MudText Typo="Typo.h2">Hi there!</MudText>
         <MudText Typo="Typo.h5">Welcome to Jeyanth's Dotnet Multiverse App!</MudText>
-        <MudText>An app where I test different parts of dotnet and blazor.</MudText>
+        <MudText>An app where I show different parts of dotnet and blazor.</MudText>
+        <MudText>Click on
+            <MudLink Href="https://github.com/mathujeyanth/dotnet-multiverse" Target="_blank" Color="Color.Inherit">
+                <MudIcon Icon="@Icons.Custom.Brands.GitHub"/>
+            </MudLink>
+            to check out the code which built this site.
+        </MudText>
         <MudSpacer/>
-        <MudButton EndIcon="@Icons.Material.Filled.MusicNote" IconSize="Size.Large" IconColor="Color.Default"
+        <MudText Typo="Typo.h5">Features:</MudText>
+        <MudSpacer/>
+        <MudButton StartIcon="@Icons.Material.Filled.MusicNote" IconSize="Size.Large" IconColor="Color.Default"
                    Href="@AudioConvertLink" Color="Color.Primary"
                    Variant="Variant.Filled" Style="padding: 3em; margin: 1em;">
             <MudText>
