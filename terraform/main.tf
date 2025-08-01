@@ -16,18 +16,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-central-1"
-  # Localstack
-  /*  access_key = "test"
-  secret_key = "test"
-  skip_credentials_validation = true
-  skip_metadata_api_check     = true
-  skip_requesting_account_id  = true
-  endpoints {
-    ec2 = "http://localhost:4566"
-    route53 = "http://localhost:4566"
-    cloudfront = "http://localhost:4566"
-  }*/
+  region  = "eu-central-1"
   profile = var.profile
 }
 

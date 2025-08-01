@@ -1,11 +1,5 @@
 # Route 53 DNS Validation
 
-/*data "aws_route53_zone" "mj_zone_existing" {
-  name = var.domain
-  private_zone = false
-}*/
-
-
 resource "aws_route53_zone" "mj_zone_new" {
   # count = length(data.aws_route53_zone.mj_zone_existing) > 0 ? 0 : 1
 
