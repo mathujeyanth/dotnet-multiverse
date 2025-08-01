@@ -8,3 +8,8 @@ variable "profile" {
   type        = string
   default     = ""
 }
+
+variable "docker_image" {
+  description = "Docker image with digest"
+  type        = string
+}
