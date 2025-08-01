@@ -36,7 +36,10 @@ resource "aws_instance" "mj_ec2" {
     http_tokens   = "required"
     http_endpoint = "enabled"
   }
-  user_data = file("${path.module}/setup_web_server.sh")
+
+  user_data = templatefile("${path.module}/setup_web_server.sh.tmpl", {
+    docker_image = var.docker_image
+  })
 
   root_block_device {
     volume_size = 15

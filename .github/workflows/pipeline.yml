@@ -93,6 +93,14 @@ jobs:
             --tag ghcr.io/${{env.DOCKER_REPO}}/${{env.IMAGE_NAME}} \
             -f Dockerfile \
             --push ..
+      
+      - name: Get image digest
+        id: get_digest
+        run: |
+          IMAGE=ghcr.io/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
+          DIGEST=$(docker buildx imagetools inspect $IMAGE | grep Digest | awk '{print $2}')
+          echo "DOCKER_IMAGE=${IMAGE}@${DIGEST}" >> $GITHUB_ENV
+          echo ${{ env.DOCKER_IMAGE }}
           
   deploy:
     needs: create-artifacts
@@ -124,4 +132,4 @@ jobs:
       
       - name: Terraform Apply
         working-directory: terraform
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="docker_image=${{ env.DOCKER_IMAGE }}"
