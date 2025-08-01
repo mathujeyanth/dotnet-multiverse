@@ -41,3 +41,7 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+
+# Terraform
+.terraform*
+terraform.tfstate*
