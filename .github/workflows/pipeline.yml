@@ -53,8 +53,7 @@ jobs:
 
   create-artifacts:
     needs: build-and-test
-    #if: ${{ success() && ((github.event_name == 'pull_request' && github.base_ref == 'main') || github.event_name == 'push' && github.ref == 'refs/heads/main') }}
-    if: ${{ success() && (github.event_name == 'push') }}
+    if: ${{ success() && ((github.event_name == 'pull_request' && github.base_ref == 'main') || github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     outputs:
       docker_image: ${{ steps.get_image.outputs.docker_image }}
     env:
@@ -108,8 +107,7 @@ jobs:
           
   deploy:
     needs: create-artifacts
-    if: ${{ success() && (github.event_name == 'push') }}
-    #if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
+    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     env:
       DOCKER_IMAGE_NAME: mj-pwa-audio-converter
       DOCKER_REPO: mathujeyanth
