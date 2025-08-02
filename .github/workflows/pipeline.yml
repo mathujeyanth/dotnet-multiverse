@@ -102,8 +102,9 @@ jobs:
         run: |
           IMAGE=ghcr.io/${{ env.DOCKER_REPO }}/${{ env.IMAGE_NAME }}
           DIGEST=$(docker buildx imagetools inspect $IMAGE | grep Digest | awk '{print $2}')
-          echo "docker_image=${IMAGE}@${DIGEST}" >> $GITHUB_OUTPUT
-          echo ${{ outputs.docker_image }}
+          DOCKER_IMAGE="${IMAGE}@${DIGEST}"
+          echo "docker_image=$DOCKER_IMAGE"
+          echo "docker_image=$DOCKER_IMAGE" >> $GITHUB_OUTPUT
           
   deploy:
     needs: create-artifacts
