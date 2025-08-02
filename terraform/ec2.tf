@@ -49,3 +49,26 @@ resource "aws_instance" "mj_ec2" {
     Name = "MjEc2Instance"
   }
 }
+
+# Updating the docker image on change
+resource "null_resource" "mj_update_docker_container" {
+  triggers = {
+    docker_image = var.docker_image
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ec2-user"
+    host        = aws_instance.mj_ec2.public_ip
+    private_key = var.ec2_private_key
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "docker pull ${var.docker_image}",
+      "docker stop $(docker ps -aq) || true", # Maybe a bit overkill
+      "docker rm $(docker ps -aq) || true",
+      "docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${var.docker_image}"
+    ]
+  }
+}
