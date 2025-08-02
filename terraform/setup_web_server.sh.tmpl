@@ -4,4 +4,4 @@ yum install docker -y
 service docker start
 systemctl enable --now docker
 usermod -aG docker ec2-user
-docker run -d --restart always -p 80:8080 ${docker_image}
+docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${docker_image}
