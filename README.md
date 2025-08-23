@@ -8,7 +8,7 @@ A project to test different aspects of .NET
 ## Pages:
 ### 1. Audio Converter PWA
 A PWA to convert from mp3 to the open-source ogg format.
-##### Demo
+##### Page demo
 ![alt text][def]
 
 [def]: public/demo.gif
