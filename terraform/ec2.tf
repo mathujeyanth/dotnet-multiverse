@@ -16,7 +16,7 @@ data "aws_key_pair" "mj_key" {
 }
 
 resource "aws_instance" "mj_ec2" {
-  ami                         = data.aws_ami.al2023.id
+  ami                         = "ami-0a72753edf3e631b7" // For latest use: data.aws_ami.al2023.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.mj_subnet.id
   associate_public_ip_address = true # false to disable public ip, but requires alb
@@ -65,6 +65,10 @@ resource "null_resource" "mj_update_docker_container" {
 
   provisioner "remote-exec" {
     inline = [
+      "set -x",
+      # Install Docker if not installed
+      "command -v docker || (sudo yum install -y docker && sudo systemctl enable docker && sudo systemctl start docker && sudo usermod -aG docker ec2-user)",
+      # Now run your container
       "docker pull ${var.docker_image}",
       "docker stop $(docker ps -aq) || true", # Maybe a bit overkill
       "docker rm $(docker ps -aq) || true",
