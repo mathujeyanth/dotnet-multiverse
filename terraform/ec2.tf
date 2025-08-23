@@ -69,10 +69,10 @@ resource "null_resource" "mj_update_docker_container" {
       # Install Docker if not installed
       "command -v docker || (sudo yum install -y docker && sudo systemctl enable docker && sudo systemctl start docker && sudo usermod -aG docker ec2-user)",
       # Now run your container
-      "docker pull ${var.docker_image}",
-      "docker stop $(docker ps -aq) || true", # Maybe a bit overkill
-      "docker rm $(docker ps -aq) || true",
-      "docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${var.docker_image}"
+      "sudo docker pull ${var.docker_image}",
+      "sudo docker stop $(docker ps -aq) || true", # Maybe a bit overkill
+      "sudo docker rm $(docker ps -aq) || true",
+      "sudo docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${var.docker_image}"
     ]
   }
 }
