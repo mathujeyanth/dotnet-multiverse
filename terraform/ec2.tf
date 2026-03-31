@@ -55,30 +55,3 @@ resource "aws_instance" "mj_ec2" {
     ]
   }
 }
-
-# Updating the docker image on change
-resource "null_resource" "mj_update_docker_container" {
-  triggers = {
-    docker_image = var.docker_image
-  }
-
-  connection {
-    type        = "ssh"
-    user        = "ec2-user"
-    host        = aws_instance.mj_ec2.public_ip
-    private_key = var.ec2_private_key
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "set -x",
-      # Install Docker if not installed
-      "command -v docker || (sudo yum install -y docker && sudo systemctl enable docker && sudo systemctl start docker && sudo usermod -aG docker ec2-user)",
-      # Now run your container
-      "sudo docker pull ${var.docker_image}",
-      "sudo docker stop mj-dotnet-multiverse || true",
-      "sudo docker rm mj-dotnet-multiverse || true",
-      "sudo docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${var.docker_image}"
-    ]
-  }
-}

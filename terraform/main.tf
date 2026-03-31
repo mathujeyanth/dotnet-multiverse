@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "5.98.0"
     }
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 5"
+    }
   }
   backend "s3" {
     bucket  = "jeyanth-terraform-states"
@@ -18,6 +22,10 @@ terraform {
 provider "aws" {
   region  = "eu-central-1"
   profile = var.profile
+}
+
+provider "cloudflare" {
+  api_token = var.cloudflare_api_token
 }
 
 resource "aws_budgets_budget" "mj_monthly_budget" {
