@@ -104,8 +104,25 @@ jobs:
           echo "docker_image=$DOCKER_IMAGE"
           echo "docker_image=$DOCKER_IMAGE" >> $GITHUB_OUTPUT
           
-  deploy:
+  terraform-validate:
     needs: create-artifacts
+    if: ${{ success() }}
+    name: Validate Terraform
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Terraform Init
+        working-directory: terraform
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        working-directory: terraform
+        run: terraform validate
+
+  deploy:
+    needs: terraform-validate
     if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') }}
     name: Deploy to AWS
     runs-on: ubuntu-22.04
@@ -124,12 +141,9 @@ jobs:
         working-directory: terraform
         run: terraform init
 
-      - name: Terraform Validate
-        working-directory: terraform
-        run: terraform validate
-      
       - name: Terraform Apply
         env:
-          TF_VAR_ec2_private_key: ${{ secrets.EC2_SSH_PRIVATE_KEY }} # Not as -var, because of security.
+          TF_VAR_ec2_private_key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          TF_VAR_ssh_allowed_cidrs: ${{ secrets.TF_VAR_SSH_ALLOWED_CIDRS }}
         working-directory: terraform
         run: terraform apply -auto-approve -var="docker_image=${{ needs.create-artifacts.outputs.docker_image }}"
