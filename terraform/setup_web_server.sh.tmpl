@@ -1,7 +1,14 @@
 #!/bin/bash
+set -e
+
 yum update -y
 yum install docker -y
-service docker start
+
 systemctl enable --now docker
-usermod -aG docker ec2-user
+
+usermod -aG docker ec2-user || true
+
+docker pull ${docker_image}
+docker stop mj-dotnet-multiverse || true
+docker rm mj-dotnet-multiverse || true
 docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${docker_image}

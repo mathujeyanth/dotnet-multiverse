@@ -42,3 +42,13 @@ resource "aws_route_table_association" "mj_route_table_association" {
   subnet_id      = aws_subnet.mj_subnet.id
   route_table_id = aws_route_table.mj_route_table.id
 }
+
+# Cloudflare
+resource "cloudflare_dns_record" "mj_ec2_dns_record" {
+  zone_id = var.cloudflare_zone_id
+  name    = var.domain
+  type    = "A"
+  content = aws_instance.mj_ec2.public_ip
+  ttl     = 1
+  proxied = true
+}
