@@ -59,14 +59,17 @@ variable "cloudflare_ipv6" {
 variable "ssh_allowed_cidrs" {
   description = "List of CIDRs allowed to ssh into EC2"
   type        = list(string)
+  sensitive   = true
 }
 
 variable "cloudflare_api_token" {
   description = "Cloudflare DNS edit API token"
   type        = string
+  sensitive   = true
 }
 
 variable "cloudflare_zone_id" {
   description = "Cloudflare Zone ID"
   type        = string
+  sensitive   = true
 }
