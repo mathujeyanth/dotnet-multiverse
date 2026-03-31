@@ -48,6 +48,12 @@ resource "aws_instance" "mj_ec2" {
   tags = {
     Name = "MjEc2Instance"
   }
+
+  lifecycle {
+    ignore_changes = [
+      vpc_security_group_ids
+    ]
+  }
 }
 
 # Updating the docker image on change
@@ -70,8 +76,8 @@ resource "null_resource" "mj_update_docker_container" {
       "command -v docker || (sudo yum install -y docker && sudo systemctl enable docker && sudo systemctl start docker && sudo usermod -aG docker ec2-user)",
       # Now run your container
       "sudo docker pull ${var.docker_image}",
-      "sudo docker stop $(docker ps -aq) || true", # Maybe a bit overkill
-      "sudo docker rm $(docker ps -aq) || true",
+      "sudo docker stop mj-dotnet-multiverse || true",
+      "sudo docker rm mj-dotnet-multiverse || true",
       "sudo docker run --name mj-dotnet-multiverse -d --restart always -p 80:8080 ${var.docker_image}"
     ]
   }

@@ -45,3 +45,5 @@ msbuild.wrn
 # Terraform
 .terraform*
 terraform.tfstate*
+dev.tfvars
+tfplan

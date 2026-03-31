@@ -33,18 +33,7 @@ resource "aws_s3_bucket" "mj_state_bucket" {
   bucket = "dotnet-multiverse-bucket"
 }
 
-# Outputs 
-
-output "route53_nameservers" {
-  value = aws_route53_zone.mj_zone_new.name_servers
-}
-output "certificate_arn" {
-  value = aws_acm_certificate.mj_certificate_new.arn
-}
-output "cloudfront_domain" {
-  value = aws_cloudfront_distribution.mj_cdn.domain_name
-}
-
+# Outputs
 output "bucket_name" {
   value = aws_s3_bucket.mj_state_bucket.bucket
 }
